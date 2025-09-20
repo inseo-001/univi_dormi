@@ -1,0 +1,33 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 채팅 컬렉션에 대한 규칙
+    match /chats/{chatId} {
+      // 읽기: 모든 사용자가 읽을 수 있음
+      allow read: if true;
+      // 쓰기: 모든 사용자가 쓸 수 있음 (테스트용)
+      allow write: if true;
+      
+      // 메시지 하위 컬렉션에 대한 규칙
+      match /messages/{messageId} {
+        // 읽기: 모든 사용자가 읽을 수 있음
+        allow read: if true;
+        // 쓰기: 모든 사용자가 쓸 수 있음 (테스트용)
+        allow write: if true;
+      }
+    }
+    
+    // 사용자 컬렉션에 대한 규칙
+    match /users/{userId} {
+      // 읽기: 모든 사용자가 읽을 수 있음
+      allow read: if true;
+      // 쓰기: 모든 사용자가 쓸 수 있음 (테스트용)
+      allow write: if true;
+    }
+    
+    // 기본 규칙: 모든 컬렉션에 대해 읽기/쓰기 허용 (테스트용)
+    match /{document=**} {
+      allow read, write: if true;
+    }
+  }
+} 

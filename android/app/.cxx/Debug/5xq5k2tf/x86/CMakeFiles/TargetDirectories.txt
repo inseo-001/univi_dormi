@@ -1,0 +1,2 @@
+C:/Users/USER/StudioProjects/------08-07-12-42/------08-07-12-42-this/android/app/.cxx/Debug/5xq5k2tf/x86/CMakeFiles/edit_cache.dir
+C:/Users/USER/StudioProjects/------08-07-12-42/------08-07-12-42-this/android/app/.cxx/Debug/5xq5k2tf/x86/CMakeFiles/rebuild_cache.dir

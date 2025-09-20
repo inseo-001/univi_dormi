@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dormi 관리자 로그인</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Roboto&display=swap" rel="stylesheet">
+  <!-- Firebase SDK 추가 -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <style>
+    html, body {
+      width: 100vw;
+      height: 100vh;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      font-family: 'Roboto', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .login-container {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+      padding: 40px;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+    }
+    
+    .logo {
+      margin-bottom: 30px;
+    }
+    
+    .logo h1 {
+      font-family: 'Montserrat', serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #4d7bbd;
+      margin: 0;
+    }
+    
+    .logo p {
+      color: #666;
+      margin: 10px 0 0 0;
+      font-size: 1rem;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #333;
+      font-size: 0.9rem;
+    }
+    
+    .form-group input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 1rem;
+      transition: border-color 0.3s;
+      box-sizing: border-box;
+    }
+    
+    .form-group input:focus {
+      outline: none;
+      border-color: #4d7bbd;
+    }
+    
+    .login-btn {
+      width: 100%;
+      padding: 14px;
+      background: #4d7bbd;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+      margin-top: 10px;
+    }
+    
+    .login-btn:hover {
+      background: #3d6ba8;
+    }
+    
+    .login-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    
+    .error-message {
+      color: #d32f2f;
+      font-size: 0.9rem;
+      margin-top: 10px;
+      display: none;
+    }
+    
+    .admin-info {
+      margin-top: 30px;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 10px;
+      text-align: left;
+    }
+    
+    .admin-info h3 {
+      color: #333;
+      margin: 0 0 15px 0;
+      font-size: 1.1rem;
+    }
+    
+    .admin-account {
+      margin-bottom: 15px;
+      padding: 10px;
+      background: white;
+      border-radius: 8px;
+      border-left: 4px solid #4d7bbd;
+    }
+    
+    .admin-account h4 {
+      margin: 0 0 5px 0;
+      color: #4d7bbd;
+      font-size: 1rem;
+    }
+    
+    .admin-account p {
+      margin: 2px 0;
+      font-size: 0.9rem;
+      color: #666;
+    }
+    
+    .loading {
+      display: none;
+      margin-top: 10px;
+    }
+    
+    .spinner {
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #4d7bbd;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="logo">
+      <h1>Dormi</h1>
+      <p>기숙사 관리 시스템</p>
+    </div>
+    
+    <form id="login-form">
+      <div class="form-group">
+        <label for="email">이메일</label>
+        <input type="email" id="email" name="email" placeholder="관리자 이메일을 입력하세요" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="password">비밀번호</label>
+        <input type="password" id="password" name="password" placeholder="비밀번호를 입력하세요" required>
+      </div>
+      
+      <button type="submit" class="login-btn" id="login-btn">
+        로그인
+      </button>
+      
+      <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p>로그인 중...</p>
+      </div>
+      
+      <div class="error-message" id="error-message"></div>
+    </form>
+    
+    <div class="admin-info">
+      <h3>관리자 계정 정보</h3>
+      
+      <div class="admin-account">
+        <h4>실장님</h4>
+        <p>이메일: director@dormi.com</p>
+        <p>비밀번호: director123</p>
+      </div>
+      
+      <div class="admin-account">
+        <h4>사감님</h4>
+        <p>이메일: supervisor@dormi.com</p>
+        <p>비밀번호: supervisor123</p>
+      </div>
+      
+      <div class="admin-account">
+        <h4>층장님</h4>
+        <p>이메일: floor_manager@dormi.com</p>
+        <p>비밀번호: floor123</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Firebase 설정
+    const firebaseConfig = {
+      apiKey: "AIzaSyALZObKyLk_Cik0H_qJ-IGBQUOR3hhlFko",
+      authDomain: "univia-db582.firebaseapp.com",
+      projectId: "univia-db582",
+      storageBucket: "univia-db582.firebasestorage.app",
+      messagingSenderId: "565193661532",
+      appId: "1:565193661532:web:804f0fa8dcf2e05ef89a99"
+    };
+
+    // Firebase 초기화
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    // 로그인 폼 이벤트
+    document.getElementById('login-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const loginBtn = document.getElementById('login-btn');
+      const loading = document.getElementById('loading');
+      const errorMessage = document.getElementById('error-message');
+      
+      // 로딩 상태 표시
+      loginBtn.style.display = 'none';
+      loading.style.display = 'block';
+      errorMessage.style.display = 'none';
+      
+      try {
+        // Firebase 인증
+        const userCredential = await auth.signInWithEmailAndPassword(email, password);
+        const user = userCredential.user;
+        
+        console.log('로그인 성공:', user.email);
+        
+        // 로그인 성공 시 관리자 대시보드로 이동
+        window.location.href = 'admin_main.html';
+        
+      } catch (error) {
+        console.error('로그인 오류:', error);
+        
+        let errorMsg = '로그인에 실패했습니다.';
+        
+        switch (error.code) {
+          case 'auth/user-not-found':
+            errorMsg = '등록되지 않은 이메일입니다.';
+            break;
+          case 'auth/wrong-password':
+            errorMsg = '잘못된 비밀번호입니다.';
+            break;
+          case 'auth/invalid-email':
+            errorMsg = '올바르지 않은 이메일 형식입니다.';
+            break;
+          case 'auth/too-many-requests':
+            errorMsg = '너무 많은 로그인 시도가 있었습니다. 잠시 후 다시 시도해주세요.';
+            break;
+        }
+        
+        errorMessage.textContent = errorMsg;
+        errorMessage.style.display = 'block';
+        
+        // 로딩 상태 해제
+        loginBtn.style.display = 'block';
+        loading.style.display = 'none';
+      }
+    });
+
+    // 페이지 로드 시 로그인 상태 확인
+    window.onload = function() {
+      auth.onAuthStateChanged(function(user) {
+        if (user) {
+          // 이미 로그인된 경우 대시보드로 이동
+          console.log('이미 로그인됨:', user.email);
+          window.location.href = 'admin_main.html';
+        }
+      });
+    };
+  </script>
+</body>
+</html>

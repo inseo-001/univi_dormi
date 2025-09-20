@@ -1,0 +1,67 @@
+{
+  "project_info": {
+    "project_number": "565193661532",
+    "project_id": "univia-db582",
+    "storage_bucket": "univia-db582.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:565193661532:android:75f33d7fbeedd0bef89a99",
+        "android_client_info": {
+          "package_name": "com.mycompany.dormi"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCHf5CG8bgwhJKHNVhDUIxrEsZI3-z005g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:565193661532:android:ddb64450539137aef89a99",
+        "android_client_info": {
+          "package_name": "com.mycompany.signup_page"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCHf5CG8bgwhJKHNVhDUIxrEsZI3-z005g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:565193661532:android:bac6332d460667fbf89a99",
+        "android_client_info": {
+          "package_name": "com.mycompany.signuppage"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCHf5CG8bgwhJKHNVhDUIxrEsZI3-z005g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,17 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // 채팅 이미지에 대한 규칙
+    match /chat_images/{chatId}/{fileName} {
+      // 읽기: 모든 사용자가 읽을 수 있음
+      allow read: if true;
+      // 쓰기: 모든 사용자가 쓸 수 있음 (테스트용)
+      allow write: if true;
+    }
+    
+    // 기본 규칙: 모든 파일에 대해 읽기/쓰기 허용 (테스트용)
+    match /{allPaths=**} {
+      allow read, write: if true;
+    }
+  }
+}
