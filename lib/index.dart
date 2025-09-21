@@ -25,7 +25,7 @@ export '/civilcomplaint/civilcomplaint_main/civilcomplaint_main_widget.dart'
     show CivilcomplaintMainWidget;
 export '/join_leave/join/join_widget.dart' show JoinWidget;
 export '/join_leave/leave/leave_widget.dart' show LeaveWidget;
-export '/join_leave/b_b_s_list/b_b_s_list_widget.dart' show BBSListWidget;
+export '/join_leave/bbs/b_b_s_list/b_b_s_list_widget.dart' show BBSListWidget;
 export '/join_leave/bbs/b_b_s_main/b_b_s_main_widget.dart' show BBSMainWidget;
 export '/join_leave/bbs/b_b_s_write/b_b_s_write_widget.dart'
     show BBSWriteWidget;

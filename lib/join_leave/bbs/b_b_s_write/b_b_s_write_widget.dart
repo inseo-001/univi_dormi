@@ -5,6 +5,7 @@ import '/index.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'b_b_s_write_model.dart';
+import '/services/bbs_service.dart';
 export 'b_b_s_write_model.dart';
 
 class BBSWriteWidget extends StatefulWidget {
@@ -21,11 +22,13 @@ class _BBSWriteWidgetState extends State<BBSWriteWidget> {
   late BBSWriteModel _model;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
+  final BBSService _bbsService = BBSService();
+  bool _isSubmitting = false;
 
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => BBSWriteModel());
+    _model = BBSWriteModel();
 
     _model.textController1 ??= TextEditingController();
     _model.textFieldFocusNode1 ??= FocusNode();
@@ -39,6 +42,57 @@ class _BBSWriteWidgetState extends State<BBSWriteWidget> {
     _model.dispose();
 
     super.dispose();
+  }
+
+  Future<void> _submitPost() async {
+    final title = _model.textController1?.text.trim() ?? '';
+    final content = _model.textController2?.text.trim() ?? '';
+
+    if (title.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('제목을 입력해주세요.')),
+      );
+      return;
+    }
+
+    if (content.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('내용을 입력해주세요.')),
+      );
+      return;
+    }
+
+    setState(() {
+      _isSubmitting = true;
+    });
+
+    try {
+      await _bbsService.createPost(
+        title: title,
+        content: content,
+      );
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('게시글이 성공적으로 작성되었습니다.')),
+        );
+
+        // 게시글 목록으로 돌아가기
+        context.pushNamed(BBSListWidget.routeName);
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('게시글 작성 중 오류가 발생했습니다: $e')),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isSubmitting = false;
+        });
+      }
+    }
   }
 
   @override
@@ -75,7 +129,7 @@ class _BBSWriteWidgetState extends State<BBSWriteWidget> {
                           size: 26.0,
                         ),
                         onPressed: () async {
-                          context.pushNamed(BBSListWidget.routeName);
+                          context.pop();
                         },
                       ),
                     ),
@@ -153,28 +207,43 @@ class _BBSWriteWidgetState extends State<BBSWriteWidget> {
                           color: Color(0xFF0C62FD),
                           borderRadius: BorderRadius.circular(14.0),
                         ),
-                        child: Padding(
-                          padding: EdgeInsetsDirectional.fromSTEB(
-                              15.0, 6.0, 0.0, 0.0),
-                          child: Text(
-                            '게시하기',
-                            style: FlutterFlowTheme.of(context)
-                                .titleMedium
-                                .override(
-                                  font: GoogleFonts.interTight(
-                                    fontWeight: FontWeight.w300,
-                                    fontStyle: FlutterFlowTheme.of(context)
+                        child: InkWell(
+                          onTap: _isSubmitting ? null : _submitPost,
+                          child: Padding(
+                            padding: EdgeInsetsDirectional.fromSTEB(
+                                15.0, 6.0, 0.0, 0.0),
+                            child: _isSubmitting
+                                ? SizedBox(
+                                    width: 12.0,
+                                    height: 12.0,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2.0,
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                          Colors.white),
+                                    ),
+                                  )
+                                : Text(
+                                    '게시하기',
+                                    style: FlutterFlowTheme.of(context)
                                         .titleMedium
-                                        .fontStyle,
+                                        .override(
+                                          font: GoogleFonts.interTight(
+                                            fontWeight: FontWeight.w300,
+                                            fontStyle:
+                                                FlutterFlowTheme.of(context)
+                                                    .titleMedium
+                                                    .fontStyle,
+                                          ),
+                                          color: Color(0xFFF6F2F2),
+                                          fontSize: 11.0,
+                                          letterSpacing: 0.0,
+                                          fontWeight: FontWeight.w300,
+                                          fontStyle:
+                                              FlutterFlowTheme.of(context)
+                                                  .titleMedium
+                                                  .fontStyle,
+                                        ),
                                   ),
-                                  color: Color(0xFFF6F2F2),
-                                  fontSize: 11.0,
-                                  letterSpacing: 0.0,
-                                  fontWeight: FontWeight.w300,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .titleMedium
-                                      .fontStyle,
-                                ),
                           ),
                         ),
                       ),
