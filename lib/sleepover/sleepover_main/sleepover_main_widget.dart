@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -44,8 +45,51 @@ class _SleepoverMainWidgetState extends State<SleepoverMainWidget> {
   @override
   void dispose() {
     _model.dispose();
-
     super.dispose();
+  }
+
+  Future<void> _submitApplication() async {
+    // 모든 필드가 채워져 있는지 유효성 검사
+    if (_model.textController1.text.isEmpty ||
+        _model.textController2.text.isEmpty ||
+        _model.textController3.text.isEmpty ||
+        _model.textController4.text.isEmpty) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('모든 필드를 작성해주세요.')),
+        );
+      }
+      return;
+    }
+
+    // Firebase에 저장할 데이터
+    final applicationData = {
+      'period': _model.textController1.text,
+      'location': _model.textController2.text,
+      'emergencyContact': _model.textController3.text,
+      'reason': _model.textController4.text,
+      'submissionDate': FieldValue.serverTimestamp(),
+      'status': '대기',
+    };
+
+    try {
+      // Firebase에 데이터 추가
+      await FirebaseFirestore.instance.collection('sleepover_applications').add(applicationData);
+
+      // 비동기 작업 후, 위젯이 마운트된 상태인지 다시 확인
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('외박 신청이 성공적으로 제출되었습니다.')),
+        );
+      }
+    } catch (e) {
+      // 오류 발생 시, 위젯이 마운트된 상태인지 확인 후 메시지 표시
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('오류가 발생했습니다: $e')),
+        );
+      }
+    }
   }
 
   @override
@@ -71,7 +115,7 @@ class _SleepoverMainWidgetState extends State<SleepoverMainWidget> {
                     alignment: AlignmentDirectional(-0.91, -1.03),
                     child: Padding(
                       padding:
-                          EdgeInsetsDirectional.fromSTEB(10.0, 0.0, 0.0, 20.0),
+                      EdgeInsetsDirectional.fromSTEB(10.0, 0.0, 0.0, 20.0),
                       child: FlutterFlowIconButton(
                         borderRadius: 9.0,
                         buttonSize: 28.5,
@@ -94,20 +138,20 @@ class _SleepoverMainWidgetState extends State<SleepoverMainWidget> {
                         child: Text(
                           '외박 신청',
                           style:
-                              FlutterFlowTheme.of(context).bodyMedium.override(
-                                    font: GoogleFonts.inter(
-                                      fontWeight: FontWeight.bold,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .bodyMedium
-                                          .fontStyle,
-                                    ),
-                                    fontSize: 16.0,
-                                    letterSpacing: 0.0,
-                                    fontWeight: FontWeight.bold,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .fontStyle,
-                                  ),
+                          FlutterFlowTheme.of(context).bodyMedium.override(
+                            font: GoogleFonts.inter(
+                              fontWeight: FontWeight.bold,
+                              fontStyle: FlutterFlowTheme.of(context)
+                                  .bodyMedium
+                                  .fontStyle,
+                            ),
+                            fontSize: 16.0,
+                            letterSpacing: 0.0,
+                            fontWeight: FontWeight.bold,
+                            fontStyle: FlutterFlowTheme.of(context)
+                                .bodyMedium
+                                .fontStyle,
+                          ),
                         ),
                       ),
                       Align(
@@ -120,23 +164,23 @@ class _SleepoverMainWidgetState extends State<SleepoverMainWidget> {
                             style: FlutterFlowTheme.of(context)
                                 .labelMedium
                                 .override(
-                                  font: GoogleFonts.inter(
-                                    fontWeight: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .fontStyle,
-                                  ),
-                                  fontSize: 10.0,
-                                  letterSpacing: 0.0,
-                                  fontWeight: FlutterFlowTheme.of(context)
-                                      .labelMedium
-                                      .fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .labelMedium
-                                      .fontStyle,
-                                ),
+                              font: GoogleFonts.inter(
+                                fontWeight: FlutterFlowTheme.of(context)
+                                    .labelMedium
+                                    .fontWeight,
+                                fontStyle: FlutterFlowTheme.of(context)
+                                    .labelMedium
+                                    .fontStyle,
+                              ),
+                              fontSize: 10.0,
+                              letterSpacing: 0.0,
+                              fontWeight: FlutterFlowTheme.of(context)
+                                  .labelMedium
+                                  .fontWeight,
+                              fontStyle: FlutterFlowTheme.of(context)
+                                  .labelMedium
+                                  .fontStyle,
+                            ),
                           ),
                         ),
                       ),
@@ -161,7 +205,7 @@ class _SleepoverMainWidgetState extends State<SleepoverMainWidget> {
                     alignment: AlignmentDirectional(-0.86, -0.81),
                     child: Padding(
                       padding:
-                          EdgeInsetsDirectional.fromSTEB(25.0, 23.0, 0.0, 0.0),
+                      EdgeInsetsDirectional.fromSTEB(25.0, 23.0, 0.0, 0.0),
                       child: Icon(
                         Icons.calendar_today_outlined,
                         color: Color(0xFF0184FB),
@@ -171,23 +215,23 @@ class _SleepoverMainWidgetState extends State<SleepoverMainWidget> {
                   ),
                   Padding(
                     padding:
-                        EdgeInsetsDirectional.fromSTEB(10.0, 20.0, 0.0, 0.0),
+                    EdgeInsetsDirectional.fromSTEB(10.0, 20.0, 0.0, 0.0),
                     child: Text(
                       '외박 신청하기',
                       style: FlutterFlowTheme.of(context).bodyMedium.override(
-                            font: GoogleFonts.inter(
-                              fontWeight: FontWeight.bold,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .bodyMedium
-                                  .fontStyle,
-                            ),
-                            fontSize: 22.0,
-                            letterSpacing: 0.0,
-                            fontWeight: FontWeight.bold,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .fontStyle,
-                          ),
+                        font: GoogleFonts.inter(
+                          fontWeight: FontWeight.bold,
+                          fontStyle: FlutterFlowTheme.of(context)
+                              .bodyMedium
+                              .fontStyle,
+                        ),
+                        fontSize: 22.0,
+                        letterSpacing: 0.0,
+                        fontWeight: FontWeight.bold,
+                        fontStyle: FlutterFlowTheme.of(context)
+                            .bodyMedium
+                            .fontStyle,
+                      ),
                     ),
                   ),
                 ],
@@ -197,23 +241,23 @@ class _SleepoverMainWidgetState extends State<SleepoverMainWidget> {
                 children: [
                   Padding(
                     padding:
-                        EdgeInsetsDirectional.fromSTEB(30.0, 25.0, 0.0, 0.0),
+                    EdgeInsetsDirectional.fromSTEB(30.0, 25.0, 0.0, 0.0),
                     child: Text(
                       '외박 기간',
                       style: FlutterFlowTheme.of(context).bodyMedium.override(
-                            font: GoogleFonts.inter(
-                              fontWeight: FontWeight.w500,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .bodyMedium
-                                  .fontStyle,
-                            ),
-                            fontSize: 18.0,
-                            letterSpacing: 0.0,
-                            fontWeight: FontWeight.w500,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .fontStyle,
-                          ),
+                        font: GoogleFonts.inter(
+                          fontWeight: FontWeight.w500,
+                          fontStyle: FlutterFlowTheme.of(context)
+                              .bodyMedium
+                              .fontStyle,
+                        ),
+                        fontSize: 18.0,
+                        letterSpacing: 0.0,
+                        fontWeight: FontWeight.w500,
+                        fontStyle: FlutterFlowTheme.of(context)
+                            .bodyMedium
+                            .fontStyle,
+                      ),
                     ),
                   ),
                 ],
@@ -250,48 +294,48 @@ class _SleepoverMainWidgetState extends State<SleepoverMainWidget> {
                                   labelStyle: FlutterFlowTheme.of(context)
                                       .labelMedium
                                       .override(
-                                        font: GoogleFonts.inter(
-                                          fontWeight:
-                                              FlutterFlowTheme.of(context)
-                                                  .labelMedium
-                                                  .fontWeight,
-                                          fontStyle:
-                                              FlutterFlowTheme.of(context)
-                                                  .labelMedium
-                                                  .fontStyle,
-                                        ),
-                                        letterSpacing: 0.0,
-                                        fontWeight: FlutterFlowTheme.of(context)
-                                            .labelMedium
-                                            .fontWeight,
-                                        fontStyle: FlutterFlowTheme.of(context)
-                                            .labelMedium
-                                            .fontStyle,
-                                      ),
+                                    font: GoogleFonts.inter(
+                                      fontWeight:
+                                      FlutterFlowTheme.of(context)
+                                          .labelMedium
+                                          .fontWeight,
+                                      fontStyle:
+                                      FlutterFlowTheme.of(context)
+                                          .labelMedium
+                                          .fontStyle,
+                                    ),
+                                    letterSpacing: 0.0,
+                                    fontWeight: FlutterFlowTheme.of(context)
+                                        .labelMedium
+                                        .fontWeight,
+                                    fontStyle: FlutterFlowTheme.of(context)
+                                        .labelMedium
+                                        .fontStyle,
+                                  ),
                                   hintText: '날짜를 선택해주세요.',
                                   hintStyle: FlutterFlowTheme.of(context)
                                       .labelLarge
                                       .override(
-                                        font: GoogleFonts.inter(
-                                          fontWeight:
-                                              FlutterFlowTheme.of(context)
-                                                  .labelLarge
-                                                  .fontWeight,
-                                          fontStyle:
-                                              FlutterFlowTheme.of(context)
-                                                  .labelLarge
-                                                  .fontStyle,
-                                        ),
-                                        color: Color(0xFF7C7C7E),
-                                        fontSize: 14.0,
-                                        letterSpacing: 0.0,
-                                        fontWeight: FlutterFlowTheme.of(context)
-                                            .labelLarge
-                                            .fontWeight,
-                                        fontStyle: FlutterFlowTheme.of(context)
-                                            .labelLarge
-                                            .fontStyle,
-                                      ),
+                                    font: GoogleFonts.inter(
+                                      fontWeight:
+                                      FlutterFlowTheme.of(context)
+                                          .labelLarge
+                                          .fontWeight,
+                                      fontStyle:
+                                      FlutterFlowTheme.of(context)
+                                          .labelLarge
+                                          .fontStyle,
+                                    ),
+                                    color: Color(0xFF7C7C7E),
+                                    fontSize: 14.0,
+                                    letterSpacing: 0.0,
+                                    fontWeight: FlutterFlowTheme.of(context)
+                                        .labelLarge
+                                        .fontWeight,
+                                    fontStyle: FlutterFlowTheme.of(context)
+                                        .labelLarge
+                                        .fontStyle,
+                                  ),
                                   enabledBorder: OutlineInputBorder(
                                     borderSide: BorderSide(
                                       color: Color(0x00000000),
@@ -327,24 +371,24 @@ class _SleepoverMainWidgetState extends State<SleepoverMainWidget> {
                                 style: FlutterFlowTheme.of(context)
                                     .bodyMedium
                                     .override(
-                                      font: GoogleFonts.inter(
-                                        fontWeight: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .fontWeight,
-                                        fontStyle: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .fontStyle,
-                                      ),
-                                      letterSpacing: 0.0,
-                                      fontWeight: FlutterFlowTheme.of(context)
-                                          .bodyMedium
-                                          .fontWeight,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .bodyMedium
-                                          .fontStyle,
-                                    ),
+                                  font: GoogleFonts.inter(
+                                    fontWeight: FlutterFlowTheme.of(context)
+                                        .bodyMedium
+                                        .fontWeight,
+                                    fontStyle: FlutterFlowTheme.of(context)
+                                        .bodyMedium
+                                        .fontStyle,
+                                  ),
+                                  letterSpacing: 0.0,
+                                  fontWeight: FlutterFlowTheme.of(context)
+                                      .bodyMedium
+                                      .fontWeight,
+                                  fontStyle: FlutterFlowTheme.of(context)
+                                      .bodyMedium
+                                      .fontStyle,
+                                ),
                                 cursorColor:
-                                    FlutterFlowTheme.of(context).primaryText,
+                                FlutterFlowTheme.of(context).primaryText,
                                 validator: _model.textController1Validator
                                     .asValidator(context),
                               ),
@@ -370,24 +414,24 @@ class _SleepoverMainWidgetState extends State<SleepoverMainWidget> {
                               textStyle: FlutterFlowTheme.of(context)
                                   .titleSmall
                                   .override(
-                                    font: GoogleFonts.interTight(
-                                      fontWeight: FlutterFlowTheme.of(context)
-                                          .titleSmall
-                                          .fontWeight,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .titleSmall
-                                          .fontStyle,
-                                    ),
-                                    color: Color(0xFF88898D),
-                                    fontSize: 20.0,
-                                    letterSpacing: 0.0,
-                                    fontWeight: FlutterFlowTheme.of(context)
-                                        .titleSmall
-                                        .fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .titleSmall
-                                        .fontStyle,
-                                  ),
+                                font: GoogleFonts.interTight(
+                                  fontWeight: FlutterFlowTheme.of(context)
+                                      .titleSmall
+                                      .fontWeight,
+                                  fontStyle: FlutterFlowTheme.of(context)
+                                      .titleSmall
+                                      .fontStyle,
+                                ),
+                                color: Color(0xFF88898D),
+                                fontSize: 20.0,
+                                letterSpacing: 0.0,
+                                fontWeight: FlutterFlowTheme.of(context)
+                                    .titleSmall
+                                    .fontWeight,
+                                fontStyle: FlutterFlowTheme.of(context)
+                                    .titleSmall
+                                    .fontStyle,
+                              ),
                               elevation: 0.0,
                               borderRadius: BorderRadius.circular(8.0),
                             ),
@@ -403,23 +447,23 @@ class _SleepoverMainWidgetState extends State<SleepoverMainWidget> {
                 children: [
                   Padding(
                     padding:
-                        EdgeInsetsDirectional.fromSTEB(30.0, 20.0, 0.0, 0.0),
+                    EdgeInsetsDirectional.fromSTEB(30.0, 20.0, 0.0, 0.0),
                     child: Text(
                       '외박 장소',
                       style: FlutterFlowTheme.of(context).bodyMedium.override(
-                            font: GoogleFonts.inter(
-                              fontWeight: FontWeight.w500,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .bodyMedium
-                                  .fontStyle,
-                            ),
-                            fontSize: 18.0,
-                            letterSpacing: 0.0,
-                            fontWeight: FontWeight.w500,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .fontStyle,
-                          ),
+                        font: GoogleFonts.inter(
+                          fontWeight: FontWeight.w500,
+                          fontStyle: FlutterFlowTheme.of(context)
+                              .bodyMedium
+                              .fontStyle,
+                        ),
+                        fontSize: 18.0,
+                        letterSpacing: 0.0,
+                        fontWeight: FontWeight.w500,
+                        fontStyle: FlutterFlowTheme.of(context)
+                            .bodyMedium
+                            .fontStyle,
+                      ),
                     ),
                   ),
                 ],
@@ -456,48 +500,48 @@ class _SleepoverMainWidgetState extends State<SleepoverMainWidget> {
                                   labelStyle: FlutterFlowTheme.of(context)
                                       .labelMedium
                                       .override(
-                                        font: GoogleFonts.inter(
-                                          fontWeight:
-                                              FlutterFlowTheme.of(context)
-                                                  .labelMedium
-                                                  .fontWeight,
-                                          fontStyle:
-                                              FlutterFlowTheme.of(context)
-                                                  .labelMedium
-                                                  .fontStyle,
-                                        ),
-                                        letterSpacing: 0.0,
-                                        fontWeight: FlutterFlowTheme.of(context)
-                                            .labelMedium
-                                            .fontWeight,
-                                        fontStyle: FlutterFlowTheme.of(context)
-                                            .labelMedium
-                                            .fontStyle,
-                                      ),
+                                    font: GoogleFonts.inter(
+                                      fontWeight:
+                                      FlutterFlowTheme.of(context)
+                                          .labelMedium
+                                          .fontWeight,
+                                      fontStyle:
+                                      FlutterFlowTheme.of(context)
+                                          .labelMedium
+                                          .fontStyle,
+                                    ),
+                                    letterSpacing: 0.0,
+                                    fontWeight: FlutterFlowTheme.of(context)
+                                        .labelMedium
+                                        .fontWeight,
+                                    fontStyle: FlutterFlowTheme.of(context)
+                                        .labelMedium
+                                        .fontStyle,
+                                  ),
                                   hintText: '외박할 장소를 입력하세요.',
                                   hintStyle: FlutterFlowTheme.of(context)
                                       .labelLarge
                                       .override(
-                                        font: GoogleFonts.inter(
-                                          fontWeight:
-                                              FlutterFlowTheme.of(context)
-                                                  .labelLarge
-                                                  .fontWeight,
-                                          fontStyle:
-                                              FlutterFlowTheme.of(context)
-                                                  .labelLarge
-                                                  .fontStyle,
-                                        ),
-                                        color: Color(0xFF7C7C7E),
-                                        fontSize: 14.0,
-                                        letterSpacing: 0.0,
-                                        fontWeight: FlutterFlowTheme.of(context)
-                                            .labelLarge
-                                            .fontWeight,
-                                        fontStyle: FlutterFlowTheme.of(context)
-                                            .labelLarge
-                                            .fontStyle,
-                                      ),
+                                    font: GoogleFonts.inter(
+                                      fontWeight:
+                                      FlutterFlowTheme.of(context)
+                                          .labelLarge
+                                          .fontWeight,
+                                      fontStyle:
+                                      FlutterFlowTheme.of(context)
+                                          .labelLarge
+                                          .fontStyle,
+                                    ),
+                                    color: Color(0xFF7C7C7E),
+                                    fontSize: 14.0,
+                                    letterSpacing: 0.0,
+                                    fontWeight: FlutterFlowTheme.of(context)
+                                        .labelLarge
+                                        .fontWeight,
+                                    fontStyle: FlutterFlowTheme.of(context)
+                                        .labelLarge
+                                        .fontStyle,
+                                  ),
                                   enabledBorder: OutlineInputBorder(
                                     borderSide: BorderSide(
                                       color: Color(0x00000000),
@@ -533,24 +577,24 @@ class _SleepoverMainWidgetState extends State<SleepoverMainWidget> {
                                 style: FlutterFlowTheme.of(context)
                                     .bodyMedium
                                     .override(
-                                      font: GoogleFonts.inter(
-                                        fontWeight: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .fontWeight,
-                                        fontStyle: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .fontStyle,
-                                      ),
-                                      letterSpacing: 0.0,
-                                      fontWeight: FlutterFlowTheme.of(context)
-                                          .bodyMedium
-                                          .fontWeight,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .bodyMedium
-                                          .fontStyle,
-                                    ),
+                                  font: GoogleFonts.inter(
+                                    fontWeight: FlutterFlowTheme.of(context)
+                                        .bodyMedium
+                                        .fontWeight,
+                                    fontStyle: FlutterFlowTheme.of(context)
+                                        .bodyMedium
+                                        .fontStyle,
+                                  ),
+                                  letterSpacing: 0.0,
+                                  fontWeight: FlutterFlowTheme.of(context)
+                                      .bodyMedium
+                                      .fontWeight,
+                                  fontStyle: FlutterFlowTheme.of(context)
+                                      .bodyMedium
+                                      .fontStyle,
+                                ),
                                 cursorColor:
-                                    FlutterFlowTheme.of(context).primaryText,
+                                FlutterFlowTheme.of(context).primaryText,
                                 validator: _model.textController2Validator
                                     .asValidator(context),
                               ),
@@ -567,23 +611,23 @@ class _SleepoverMainWidgetState extends State<SleepoverMainWidget> {
                 children: [
                   Padding(
                     padding:
-                        EdgeInsetsDirectional.fromSTEB(30.0, 20.0, 0.0, 0.0),
+                    EdgeInsetsDirectional.fromSTEB(30.0, 20.0, 0.0, 0.0),
                     child: Text(
                       '비상 연락처',
                       style: FlutterFlowTheme.of(context).bodyMedium.override(
-                            font: GoogleFonts.inter(
-                              fontWeight: FontWeight.w500,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .bodyMedium
-                                  .fontStyle,
-                            ),
-                            fontSize: 18.0,
-                            letterSpacing: 0.0,
-                            fontWeight: FontWeight.w500,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .fontStyle,
-                          ),
+                        font: GoogleFonts.inter(
+                          fontWeight: FontWeight.w500,
+                          fontStyle: FlutterFlowTheme.of(context)
+                              .bodyMedium
+                              .fontStyle,
+                        ),
+                        fontSize: 18.0,
+                        letterSpacing: 0.0,
+                        fontWeight: FontWeight.w500,
+                        fontStyle: FlutterFlowTheme.of(context)
+                            .bodyMedium
+                            .fontStyle,
+                      ),
                     ),
                   ),
                 ],
@@ -620,48 +664,48 @@ class _SleepoverMainWidgetState extends State<SleepoverMainWidget> {
                                   labelStyle: FlutterFlowTheme.of(context)
                                       .labelMedium
                                       .override(
-                                        font: GoogleFonts.inter(
-                                          fontWeight:
-                                              FlutterFlowTheme.of(context)
-                                                  .labelMedium
-                                                  .fontWeight,
-                                          fontStyle:
-                                              FlutterFlowTheme.of(context)
-                                                  .labelMedium
-                                                  .fontStyle,
-                                        ),
-                                        letterSpacing: 0.0,
-                                        fontWeight: FlutterFlowTheme.of(context)
-                                            .labelMedium
-                                            .fontWeight,
-                                        fontStyle: FlutterFlowTheme.of(context)
-                                            .labelMedium
-                                            .fontStyle,
-                                      ),
+                                    font: GoogleFonts.inter(
+                                      fontWeight:
+                                      FlutterFlowTheme.of(context)
+                                          .labelMedium
+                                          .fontWeight,
+                                      fontStyle:
+                                      FlutterFlowTheme.of(context)
+                                          .labelMedium
+                                          .fontStyle,
+                                    ),
+                                    letterSpacing: 0.0,
+                                    fontWeight: FlutterFlowTheme.of(context)
+                                        .labelMedium
+                                        .fontWeight,
+                                    fontStyle: FlutterFlowTheme.of(context)
+                                        .labelMedium
+                                        .fontStyle,
+                                  ),
                                   hintText: '비상시 연락받을 전화번호',
                                   hintStyle: FlutterFlowTheme.of(context)
                                       .labelLarge
                                       .override(
-                                        font: GoogleFonts.inter(
-                                          fontWeight:
-                                              FlutterFlowTheme.of(context)
-                                                  .labelLarge
-                                                  .fontWeight,
-                                          fontStyle:
-                                              FlutterFlowTheme.of(context)
-                                                  .labelLarge
-                                                  .fontStyle,
-                                        ),
-                                        color: Color(0xFF7C7C7E),
-                                        fontSize: 14.0,
-                                        letterSpacing: 0.0,
-                                        fontWeight: FlutterFlowTheme.of(context)
-                                            .labelLarge
-                                            .fontWeight,
-                                        fontStyle: FlutterFlowTheme.of(context)
-                                            .labelLarge
-                                            .fontStyle,
-                                      ),
+                                    font: GoogleFonts.inter(
+                                      fontWeight:
+                                      FlutterFlowTheme.of(context)
+                                          .labelLarge
+                                          .fontWeight,
+                                      fontStyle:
+                                      FlutterFlowTheme.of(context)
+                                          .labelLarge
+                                          .fontStyle,
+                                    ),
+                                    color: Color(0xFF7C7C7E),
+                                    fontSize: 14.0,
+                                    letterSpacing: 0.0,
+                                    fontWeight: FlutterFlowTheme.of(context)
+                                        .labelLarge
+                                        .fontWeight,
+                                    fontStyle: FlutterFlowTheme.of(context)
+                                        .labelLarge
+                                        .fontStyle,
+                                  ),
                                   enabledBorder: OutlineInputBorder(
                                     borderSide: BorderSide(
                                       color: Color(0x00000000),
@@ -697,24 +741,24 @@ class _SleepoverMainWidgetState extends State<SleepoverMainWidget> {
                                 style: FlutterFlowTheme.of(context)
                                     .bodyMedium
                                     .override(
-                                      font: GoogleFonts.inter(
-                                        fontWeight: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .fontWeight,
-                                        fontStyle: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .fontStyle,
-                                      ),
-                                      letterSpacing: 0.0,
-                                      fontWeight: FlutterFlowTheme.of(context)
-                                          .bodyMedium
-                                          .fontWeight,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .bodyMedium
-                                          .fontStyle,
-                                    ),
+                                  font: GoogleFonts.inter(
+                                    fontWeight: FlutterFlowTheme.of(context)
+                                        .bodyMedium
+                                        .fontWeight,
+                                    fontStyle: FlutterFlowTheme.of(context)
+                                        .bodyMedium
+                                        .fontStyle,
+                                  ),
+                                  letterSpacing: 0.0,
+                                  fontWeight: FlutterFlowTheme.of(context)
+                                      .bodyMedium
+                                      .fontWeight,
+                                  fontStyle: FlutterFlowTheme.of(context)
+                                      .bodyMedium
+                                      .fontStyle,
+                                ),
                                 cursorColor:
-                                    FlutterFlowTheme.of(context).primaryText,
+                                FlutterFlowTheme.of(context).primaryText,
                                 validator: _model.textController3Validator
                                     .asValidator(context),
                               ),
@@ -731,23 +775,23 @@ class _SleepoverMainWidgetState extends State<SleepoverMainWidget> {
                 children: [
                   Padding(
                     padding:
-                        EdgeInsetsDirectional.fromSTEB(30.0, 20.0, 0.0, 0.0),
+                    EdgeInsetsDirectional.fromSTEB(30.0, 20.0, 0.0, 0.0),
                     child: Text(
                       '외박 사유',
                       style: FlutterFlowTheme.of(context).bodyMedium.override(
-                            font: GoogleFonts.inter(
-                              fontWeight: FontWeight.w500,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .bodyMedium
-                                  .fontStyle,
-                            ),
-                            fontSize: 18.0,
-                            letterSpacing: 0.0,
-                            fontWeight: FontWeight.w500,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .fontStyle,
-                          ),
+                        font: GoogleFonts.inter(
+                          fontWeight: FontWeight.w500,
+                          fontStyle: FlutterFlowTheme.of(context)
+                              .bodyMedium
+                              .fontStyle,
+                        ),
+                        fontSize: 18.0,
+                        letterSpacing: 0.0,
+                        fontWeight: FontWeight.w500,
+                        fontStyle: FlutterFlowTheme.of(context)
+                            .bodyMedium
+                            .fontStyle,
+                      ),
                     ),
                   ),
                 ],
@@ -780,44 +824,44 @@ class _SleepoverMainWidgetState extends State<SleepoverMainWidget> {
                             labelStyle: FlutterFlowTheme.of(context)
                                 .labelMedium
                                 .override(
-                                  font: GoogleFonts.inter(
-                                    fontWeight: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .fontStyle,
-                                  ),
-                                  letterSpacing: 0.0,
-                                  fontWeight: FlutterFlowTheme.of(context)
-                                      .labelMedium
-                                      .fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .labelMedium
-                                      .fontStyle,
-                                ),
+                              font: GoogleFonts.inter(
+                                fontWeight: FlutterFlowTheme.of(context)
+                                    .labelMedium
+                                    .fontWeight,
+                                fontStyle: FlutterFlowTheme.of(context)
+                                    .labelMedium
+                                    .fontStyle,
+                              ),
+                              letterSpacing: 0.0,
+                              fontWeight: FlutterFlowTheme.of(context)
+                                  .labelMedium
+                                  .fontWeight,
+                              fontStyle: FlutterFlowTheme.of(context)
+                                  .labelMedium
+                                  .fontStyle,
+                            ),
                             hintText: '외박 사유를 상세히 작성해주세요',
                             hintStyle: FlutterFlowTheme.of(context)
                                 .labelLarge
                                 .override(
-                                  font: GoogleFonts.inter(
-                                    fontWeight: FlutterFlowTheme.of(context)
-                                        .labelLarge
-                                        .fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .labelLarge
-                                        .fontStyle,
-                                  ),
-                                  color: Color(0xFF7C7C7E),
-                                  fontSize: 14.0,
-                                  letterSpacing: 0.0,
-                                  fontWeight: FlutterFlowTheme.of(context)
-                                      .labelLarge
-                                      .fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .labelLarge
-                                      .fontStyle,
-                                ),
+                              font: GoogleFonts.inter(
+                                fontWeight: FlutterFlowTheme.of(context)
+                                    .labelLarge
+                                    .fontWeight,
+                                fontStyle: FlutterFlowTheme.of(context)
+                                    .labelLarge
+                                    .fontStyle,
+                              ),
+                              color: Color(0xFF7C7C7E),
+                              fontSize: 14.0,
+                              letterSpacing: 0.0,
+                              fontWeight: FlutterFlowTheme.of(context)
+                                  .labelLarge
+                                  .fontWeight,
+                              fontStyle: FlutterFlowTheme.of(context)
+                                  .labelLarge
+                                  .fontStyle,
+                            ),
                             enabledBorder: OutlineInputBorder(
                               borderSide: BorderSide(
                                 color: Color(0x00000000),
@@ -851,23 +895,23 @@ class _SleepoverMainWidgetState extends State<SleepoverMainWidget> {
                                 .secondaryBackground,
                           ),
                           style:
-                              FlutterFlowTheme.of(context).bodyMedium.override(
-                                    font: GoogleFonts.inter(
-                                      fontWeight: FlutterFlowTheme.of(context)
-                                          .bodyMedium
-                                          .fontWeight,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .bodyMedium
-                                          .fontStyle,
-                                    ),
-                                    letterSpacing: 0.0,
-                                    fontWeight: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .fontStyle,
-                                  ),
+                          FlutterFlowTheme.of(context).bodyMedium.override(
+                            font: GoogleFonts.inter(
+                              fontWeight: FlutterFlowTheme.of(context)
+                                  .bodyMedium
+                                  .fontWeight,
+                              fontStyle: FlutterFlowTheme.of(context)
+                                  .bodyMedium
+                                  .fontStyle,
+                            ),
+                            letterSpacing: 0.0,
+                            fontWeight: FlutterFlowTheme.of(context)
+                                .bodyMedium
+                                .fontWeight,
+                            fontStyle: FlutterFlowTheme.of(context)
+                                .bodyMedium
+                                .fontStyle,
+                          ),
                           maxLines: 20,
                           cursorColor: FlutterFlowTheme.of(context).primaryText,
                           validator: _model.textController4Validator
@@ -878,39 +922,43 @@ class _SleepoverMainWidgetState extends State<SleepoverMainWidget> {
                   ],
                 ),
               ),
-              Align(
-                alignment: AlignmentDirectional(-0.72, 0.22),
-                child: Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(20.0, 30.0, 0.0, 0.0),
-                  child: Container(
-                    width: 340.0,
-                    height: 40.0,
-                    decoration: BoxDecoration(
-                      color: Color(0xFF0E1534),
-                      borderRadius: BorderRadius.circular(6.0),
-                      shape: BoxShape.rectangle,
-                    ),
-                    child: Padding(
-                      padding:
-                          EdgeInsetsDirectional.fromSTEB(115.0, 7.0, 0.0, 0.0),
-                      child: Text(
-                        '외박 신청 제출',
-                        style:
-                            FlutterFlowTheme.of(context).titleMedium.override(
-                                  font: GoogleFonts.interTight(
-                                    fontWeight: FontWeight.w100,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .titleMedium
-                                        .fontStyle,
-                                  ),
-                                  color: Color(0xFFDADEE9),
-                                  fontSize: 17.0,
-                                  letterSpacing: 0.0,
-                                  fontWeight: FontWeight.w100,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .titleMedium
-                                      .fontStyle,
-                                ),
+              GestureDetector(
+                onTap: _submitApplication,
+                child: Align(
+                  alignment: AlignmentDirectional(-0.72, 0.22),
+                  child: Padding(
+                    padding:
+                    EdgeInsetsDirectional.fromSTEB(20.0, 30.0, 0.0, 0.0),
+                    child: Container(
+                      width: 340.0,
+                      height: 40.0,
+                      decoration: BoxDecoration(
+                        color: Color(0xFF0E1534),
+                        borderRadius: BorderRadius.circular(6.0),
+                        shape: BoxShape.rectangle,
+                      ),
+                      child: Padding(
+                        padding:
+                        EdgeInsetsDirectional.fromSTEB(115.0, 7.0, 0.0, 0.0),
+                        child: Text(
+                          '외박 신청 제출',
+                          style:
+                          FlutterFlowTheme.of(context).titleMedium.override(
+                            font: GoogleFonts.interTight(
+                              fontWeight: FontWeight.w100,
+                              fontStyle: FlutterFlowTheme.of(context)
+                                  .titleMedium
+                                  .fontStyle,
+                            ),
+                            color: Color(0xFFDADEE9),
+                            fontSize: 17.0,
+                            letterSpacing: 0.0,
+                            fontWeight: FontWeight.w100,
+                            fontStyle: FlutterFlowTheme.of(context)
+                                .titleMedium
+                                .fontStyle,
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -923,7 +971,7 @@ class _SleepoverMainWidgetState extends State<SleepoverMainWidget> {
                     alignment: AlignmentDirectional(-0.86, -0.81),
                     child: Padding(
                       padding:
-                          EdgeInsetsDirectional.fromSTEB(25.0, 23.0, 0.0, 0.0),
+                      EdgeInsetsDirectional.fromSTEB(25.0, 23.0, 0.0, 0.0),
                       child: Icon(
                         Icons.access_time,
                         color: Color(0xFF0184FB),
@@ -933,23 +981,23 @@ class _SleepoverMainWidgetState extends State<SleepoverMainWidget> {
                   ),
                   Padding(
                     padding:
-                        EdgeInsetsDirectional.fromSTEB(10.0, 20.0, 0.0, 0.0),
+                    EdgeInsetsDirectional.fromSTEB(10.0, 20.0, 0.0, 0.0),
                     child: Text(
                       '신청 현황',
                       style: FlutterFlowTheme.of(context).bodyMedium.override(
-                            font: GoogleFonts.inter(
-                              fontWeight: FontWeight.bold,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .bodyMedium
-                                  .fontStyle,
-                            ),
-                            fontSize: 22.0,
-                            letterSpacing: 0.0,
-                            fontWeight: FontWeight.bold,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .fontStyle,
-                          ),
+                        font: GoogleFonts.inter(
+                          fontWeight: FontWeight.bold,
+                          fontStyle: FlutterFlowTheme.of(context)
+                              .bodyMedium
+                              .fontStyle,
+                        ),
+                        fontSize: 22.0,
+                        letterSpacing: 0.0,
+                        fontWeight: FontWeight.bold,
+                        fontStyle: FlutterFlowTheme.of(context)
+                            .bodyMedium
+                            .fontStyle,
+                      ),
                     ),
                   ),
                 ],
@@ -966,7 +1014,7 @@ class _SleepoverMainWidgetState extends State<SleepoverMainWidget> {
                         height: 111.71,
                         decoration: BoxDecoration(
                           color:
-                              FlutterFlowTheme.of(context).secondaryBackground,
+                          FlutterFlowTheme.of(context).secondaryBackground,
                           borderRadius: BorderRadius.circular(8.0),
                           shape: BoxShape.rectangle,
                           border: Border.all(
@@ -987,11 +1035,11 @@ class _SleepoverMainWidgetState extends State<SleepoverMainWidget> {
                                     children: [
                                       Align(
                                         alignment:
-                                            AlignmentDirectional(-0.94, -0.19),
+                                        AlignmentDirectional(-0.94, -0.19),
                                         child: Padding(
                                           padding:
-                                              EdgeInsetsDirectional.fromSTEB(
-                                                  17.0, 0.0, 0.0, 0.0),
+                                          EdgeInsetsDirectional.fromSTEB(
+                                              17.0, 0.0, 0.0, 0.0),
                                           child: Icon(
                                             Icons.location_on_rounded,
                                             color: Color(0xFFB0B2B8),
@@ -1001,85 +1049,85 @@ class _SleepoverMainWidgetState extends State<SleepoverMainWidget> {
                                       ),
                                       Align(
                                         alignment:
-                                            AlignmentDirectional(-0.56, 0.27),
+                                        AlignmentDirectional(-0.56, 0.27),
                                         child: Padding(
                                           padding:
-                                              EdgeInsetsDirectional.fromSTEB(
-                                                  2.0, 2.0, 0.0, 0.0),
+                                          EdgeInsetsDirectional.fromSTEB(
+                                              2.0, 2.0, 0.0, 0.0),
                                           child: Text(
                                             '서울시 강남구',
                                             style: FlutterFlowTheme.of(context)
                                                 .bodyMedium
                                                 .override(
-                                                  font: GoogleFonts.inter(
-                                                    fontWeight:
-                                                        FontWeight.normal,
-                                                    fontStyle:
-                                                        FlutterFlowTheme.of(
-                                                                context)
-                                                            .bodyMedium
-                                                            .fontStyle,
-                                                  ),
-                                                  color: Color(0xFF14181B),
-                                                  fontSize: 15.0,
-                                                  letterSpacing: 0.0,
-                                                  fontWeight: FontWeight.normal,
-                                                  fontStyle:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .bodyMedium
-                                                          .fontStyle,
-                                                ),
+                                              font: GoogleFonts.inter(
+                                                fontWeight:
+                                                FontWeight.normal,
+                                                fontStyle:
+                                                FlutterFlowTheme.of(
+                                                    context)
+                                                    .bodyMedium
+                                                    .fontStyle,
+                                              ),
+                                              color: Color(0xFF14181B),
+                                              fontSize: 15.0,
+                                              letterSpacing: 0.0,
+                                              fontWeight: FontWeight.normal,
+                                              fontStyle:
+                                              FlutterFlowTheme.of(
+                                                  context)
+                                                  .bodyMedium
+                                                  .fontStyle,
+                                            ),
                                           ),
                                         ),
                                       ),
                                       Align(
                                         alignment:
-                                            AlignmentDirectional(0.71, -0.57),
+                                        AlignmentDirectional(0.71, -0.57),
                                         child: Padding(
                                           padding:
-                                              EdgeInsetsDirectional.fromSTEB(
-                                                  150.0, 0.0, 0.0, 0.0),
+                                          EdgeInsetsDirectional.fromSTEB(
+                                              150.0, 0.0, 0.0, 0.0),
                                           child: Container(
                                             width: 55.1,
                                             height: 24.4,
                                             decoration: BoxDecoration(
                                               color: Color(0xFF11BD4A),
                                               borderRadius:
-                                                  BorderRadius.circular(14.0),
+                                              BorderRadius.circular(14.0),
                                             ),
                                             child: Padding(
                                               padding: EdgeInsetsDirectional
                                                   .fromSTEB(
-                                                      16.0, 2.0, 0.0, 0.0),
+                                                  16.0, 2.0, 0.0, 0.0),
                                               child: Text(
                                                 '승인',
                                                 style:
-                                                    FlutterFlowTheme.of(context)
+                                                FlutterFlowTheme.of(context)
+                                                    .titleMedium
+                                                    .override(
+                                                  font: GoogleFonts
+                                                      .interTight(
+                                                    fontWeight:
+                                                    FontWeight.w100,
+                                                    fontStyle:
+                                                    FlutterFlowTheme.of(
+                                                        context)
                                                         .titleMedium
-                                                        .override(
-                                                          font: GoogleFonts
-                                                              .interTight(
-                                                            fontWeight:
-                                                                FontWeight.w100,
-                                                            fontStyle:
-                                                                FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .titleMedium
-                                                                    .fontStyle,
-                                                          ),
-                                                          color:
-                                                              Color(0xFFF6F2F2),
-                                                          fontSize: 13.0,
-                                                          letterSpacing: 0.0,
-                                                          fontWeight:
-                                                              FontWeight.w100,
-                                                          fontStyle:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .titleMedium
-                                                                  .fontStyle,
-                                                        ),
+                                                        .fontStyle,
+                                                  ),
+                                                  color:
+                                                  Color(0xFFF6F2F2),
+                                                  fontSize: 13.0,
+                                                  letterSpacing: 0.0,
+                                                  fontWeight:
+                                                  FontWeight.w100,
+                                                  fontStyle:
+                                                  FlutterFlowTheme.of(
+                                                      context)
+                                                      .titleMedium
+                                                      .fontStyle,
+                                                ),
                                               ),
                                             ),
                                           ),
@@ -1099,27 +1147,27 @@ class _SleepoverMainWidgetState extends State<SleepoverMainWidget> {
                                         style: FlutterFlowTheme.of(context)
                                             .bodyMedium
                                             .override(
-                                              font: GoogleFonts.inter(
-                                                fontWeight:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .fontWeight,
-                                                fontStyle:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .fontStyle,
-                                              ),
-                                              color: Color(0xFF88898D),
-                                              letterSpacing: 0.0,
-                                              fontWeight:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyMedium
-                                                      .fontWeight,
-                                              fontStyle:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyMedium
-                                                      .fontStyle,
-                                            ),
+                                          font: GoogleFonts.inter(
+                                            fontWeight:
+                                            FlutterFlowTheme.of(context)
+                                                .bodyMedium
+                                                .fontWeight,
+                                            fontStyle:
+                                            FlutterFlowTheme.of(context)
+                                                .bodyMedium
+                                                .fontStyle,
+                                          ),
+                                          color: Color(0xFF88898D),
+                                          letterSpacing: 0.0,
+                                          fontWeight:
+                                          FlutterFlowTheme.of(context)
+                                              .bodyMedium
+                                              .fontWeight,
+                                          fontStyle:
+                                          FlutterFlowTheme.of(context)
+                                              .bodyMedium
+                                              .fontStyle,
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -1135,27 +1183,27 @@ class _SleepoverMainWidgetState extends State<SleepoverMainWidget> {
                                         style: FlutterFlowTheme.of(context)
                                             .bodyMedium
                                             .override(
-                                              font: GoogleFonts.inter(
-                                                fontWeight:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .fontWeight,
-                                                fontStyle:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .fontStyle,
-                                              ),
-                                              color: Color(0xFF88898D),
-                                              letterSpacing: 0.0,
-                                              fontWeight:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyMedium
-                                                      .fontWeight,
-                                              fontStyle:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyMedium
-                                                      .fontStyle,
-                                            ),
+                                          font: GoogleFonts.inter(
+                                            fontWeight:
+                                            FlutterFlowTheme.of(context)
+                                                .bodyMedium
+                                                .fontWeight,
+                                            fontStyle:
+                                            FlutterFlowTheme.of(context)
+                                                .bodyMedium
+                                                .fontStyle,
+                                          ),
+                                          color: Color(0xFF88898D),
+                                          letterSpacing: 0.0,
+                                          fontWeight:
+                                          FlutterFlowTheme.of(context)
+                                              .bodyMedium
+                                              .fontWeight,
+                                          fontStyle:
+                                          FlutterFlowTheme.of(context)
+                                              .bodyMedium
+                                              .fontStyle,
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -1181,7 +1229,7 @@ class _SleepoverMainWidgetState extends State<SleepoverMainWidget> {
                         height: 111.7,
                         decoration: BoxDecoration(
                           color:
-                              FlutterFlowTheme.of(context).secondaryBackground,
+                          FlutterFlowTheme.of(context).secondaryBackground,
                           borderRadius: BorderRadius.circular(8.0),
                           shape: BoxShape.rectangle,
                           border: Border.all(
@@ -1202,11 +1250,11 @@ class _SleepoverMainWidgetState extends State<SleepoverMainWidget> {
                                     children: [
                                       Align(
                                         alignment:
-                                            AlignmentDirectional(-0.94, -0.19),
+                                        AlignmentDirectional(-0.94, -0.19),
                                         child: Padding(
                                           padding:
-                                              EdgeInsetsDirectional.fromSTEB(
-                                                  17.0, 0.0, 0.0, 0.0),
+                                          EdgeInsetsDirectional.fromSTEB(
+                                              17.0, 0.0, 0.0, 0.0),
                                           child: Icon(
                                             Icons.location_on_rounded,
                                             color: Color(0xFFB0B2B8),
@@ -1216,85 +1264,85 @@ class _SleepoverMainWidgetState extends State<SleepoverMainWidget> {
                                       ),
                                       Align(
                                         alignment:
-                                            AlignmentDirectional(-0.56, 0.27),
+                                        AlignmentDirectional(-0.56, 0.27),
                                         child: Padding(
                                           padding:
-                                              EdgeInsetsDirectional.fromSTEB(
-                                                  2.0, 2.0, 0.0, 0.0),
+                                          EdgeInsetsDirectional.fromSTEB(
+                                              2.0, 2.0, 0.0, 0.0),
                                           child: Text(
                                             '부산시 해운대구',
                                             style: FlutterFlowTheme.of(context)
                                                 .bodyMedium
                                                 .override(
-                                                  font: GoogleFonts.inter(
-                                                    fontWeight:
-                                                        FontWeight.normal,
-                                                    fontStyle:
-                                                        FlutterFlowTheme.of(
-                                                                context)
-                                                            .bodyMedium
-                                                            .fontStyle,
-                                                  ),
-                                                  color: Color(0xFF14181B),
-                                                  fontSize: 15.0,
-                                                  letterSpacing: 0.0,
-                                                  fontWeight: FontWeight.normal,
-                                                  fontStyle:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .bodyMedium
-                                                          .fontStyle,
-                                                ),
+                                              font: GoogleFonts.inter(
+                                                fontWeight:
+                                                FontWeight.normal,
+                                                fontStyle:
+                                                FlutterFlowTheme.of(
+                                                    context)
+                                                    .bodyMedium
+                                                    .fontStyle,
+                                              ),
+                                              color: Color(0xFF14181B),
+                                              fontSize: 15.0,
+                                              letterSpacing: 0.0,
+                                              fontWeight: FontWeight.normal,
+                                              fontStyle:
+                                              FlutterFlowTheme.of(
+                                                  context)
+                                                  .bodyMedium
+                                                  .fontStyle,
+                                            ),
                                           ),
                                         ),
                                       ),
                                       Align(
                                         alignment:
-                                            AlignmentDirectional(0.71, -0.57),
+                                        AlignmentDirectional(0.71, -0.57),
                                         child: Padding(
                                           padding:
-                                              EdgeInsetsDirectional.fromSTEB(
-                                                  135.0, 0.0, 0.0, 0.0),
+                                          EdgeInsetsDirectional.fromSTEB(
+                                              135.0, 0.0, 0.0, 0.0),
                                           child: Container(
                                             width: 55.1,
                                             height: 24.4,
                                             decoration: BoxDecoration(
                                               color: Color(0xFFD87519),
                                               borderRadius:
-                                                  BorderRadius.circular(14.0),
+                                              BorderRadius.circular(14.0),
                                             ),
                                             child: Padding(
                                               padding: EdgeInsetsDirectional
                                                   .fromSTEB(
-                                                      16.0, 2.0, 0.0, 0.0),
+                                                  16.0, 2.0, 0.0, 0.0),
                                               child: Text(
                                                 '대기',
                                                 style:
-                                                    FlutterFlowTheme.of(context)
+                                                FlutterFlowTheme.of(context)
+                                                    .titleMedium
+                                                    .override(
+                                                  font: GoogleFonts
+                                                      .interTight(
+                                                    fontWeight:
+                                                    FontWeight.w100,
+                                                    fontStyle:
+                                                    FlutterFlowTheme.of(
+                                                        context)
                                                         .titleMedium
-                                                        .override(
-                                                          font: GoogleFonts
-                                                              .interTight(
-                                                            fontWeight:
-                                                                FontWeight.w100,
-                                                            fontStyle:
-                                                                FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .titleMedium
-                                                                    .fontStyle,
-                                                          ),
-                                                          color:
-                                                              Color(0xFFF6F2F2),
-                                                          fontSize: 13.0,
-                                                          letterSpacing: 0.0,
-                                                          fontWeight:
-                                                              FontWeight.w100,
-                                                          fontStyle:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .titleMedium
-                                                                  .fontStyle,
-                                                        ),
+                                                        .fontStyle,
+                                                  ),
+                                                  color:
+                                                  Color(0xFFF6F2F2),
+                                                  fontSize: 13.0,
+                                                  letterSpacing: 0.0,
+                                                  fontWeight:
+                                                  FontWeight.w100,
+                                                  fontStyle:
+                                                  FlutterFlowTheme.of(
+                                                      context)
+                                                      .titleMedium
+                                                      .fontStyle,
+                                                ),
                                               ),
                                             ),
                                           ),
@@ -1314,27 +1362,27 @@ class _SleepoverMainWidgetState extends State<SleepoverMainWidget> {
                                         style: FlutterFlowTheme.of(context)
                                             .bodyMedium
                                             .override(
-                                              font: GoogleFonts.inter(
-                                                fontWeight:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .fontWeight,
-                                                fontStyle:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .fontStyle,
-                                              ),
-                                              color: Color(0xFF88898D),
-                                              letterSpacing: 0.0,
-                                              fontWeight:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyMedium
-                                                      .fontWeight,
-                                              fontStyle:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyMedium
-                                                      .fontStyle,
-                                            ),
+                                          font: GoogleFonts.inter(
+                                            fontWeight:
+                                            FlutterFlowTheme.of(context)
+                                                .bodyMedium
+                                                .fontWeight,
+                                            fontStyle:
+                                            FlutterFlowTheme.of(context)
+                                                .bodyMedium
+                                                .fontStyle,
+                                          ),
+                                          color: Color(0xFF88898D),
+                                          letterSpacing: 0.0,
+                                          fontWeight:
+                                          FlutterFlowTheme.of(context)
+                                              .bodyMedium
+                                              .fontWeight,
+                                          fontStyle:
+                                          FlutterFlowTheme.of(context)
+                                              .bodyMedium
+                                              .fontStyle,
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -1350,27 +1398,27 @@ class _SleepoverMainWidgetState extends State<SleepoverMainWidget> {
                                         style: FlutterFlowTheme.of(context)
                                             .bodyMedium
                                             .override(
-                                              font: GoogleFonts.inter(
-                                                fontWeight:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .fontWeight,
-                                                fontStyle:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .fontStyle,
-                                              ),
-                                              color: Color(0xFF88898D),
-                                              letterSpacing: 0.0,
-                                              fontWeight:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyMedium
-                                                      .fontWeight,
-                                              fontStyle:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyMedium
-                                                      .fontStyle,
-                                            ),
+                                          font: GoogleFonts.inter(
+                                            fontWeight:
+                                            FlutterFlowTheme.of(context)
+                                                .bodyMedium
+                                                .fontWeight,
+                                            fontStyle:
+                                            FlutterFlowTheme.of(context)
+                                                .bodyMedium
+                                                .fontStyle,
+                                          ),
+                                          color: Color(0xFF88898D),
+                                          letterSpacing: 0.0,
+                                          fontWeight:
+                                          FlutterFlowTheme.of(context)
+                                              .bodyMedium
+                                              .fontWeight,
+                                          fontStyle:
+                                          FlutterFlowTheme.of(context)
+                                              .bodyMedium
+                                              .fontStyle,
+                                        ),
                                       ),
                                     ],
                                   ),
