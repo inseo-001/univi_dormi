@@ -5,18 +5,28 @@ import 'package:flutter/material.dart';
 import '../../models/notice.dart';
 import '../../services/notice_service.dart';
 import '../../services/auth_service.dart';
+import '../../services/application_service.dart';
 
 class HomePageModel extends FlutterFlowModel<HomePageWidget> {
   final NoticeService noticeService = NoticeService();
   final AuthService authService = AuthService();
+  final ApplicationService applicationService = ApplicationService();
   List<Notice> notices = [];
   bool isLoading = true;
   String? userName;
+  Map<String, int> applicationCounts = {
+    'join': 0,
+    'leave': 0,
+    'sleepover': 0,
+    'complaint': 0,
+  };
+  List<Map<String, dynamic>> recentApplications = [];
 
   @override
   void initState(BuildContext context) {
     loadUserData();
     _loadNotices();
+    loadApplicationData();
   }
 
   Future<void> loadUserData() async {
@@ -44,6 +54,16 @@ class HomePageModel extends FlutterFlowModel<HomePageWidget> {
     } catch (e) {
       print('공지사항 로딩 오류: $e');
       isLoading = false;
+    }
+  }
+
+  Future<void> loadApplicationData() async {
+    try {
+      applicationCounts = await applicationService.getUserApplicationCounts();
+      recentApplications = await applicationService.getRecentApplications();
+      print('📋 신청 목록 로드 완료: $applicationCounts');
+    } catch (e) {
+      print('신청 목록 로딩 오류: $e');
     }
   }
 

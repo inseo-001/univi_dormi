@@ -197,6 +197,11 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           name: ScoreApplicationWidget.routeName,
           path: ScoreApplicationWidget.routePath,
           builder: (context, params) => ScoreApplicationWidget(),
+        ),
+        FFRoute(
+          name: ApplicationListWidget.routeName,
+          path: ApplicationListWidget.routePath,
+          builder: (context, params) => ApplicationListWidget(),
         )
       ].map((r) => r.toRoute(appStateNotifier)).toList(),
     );

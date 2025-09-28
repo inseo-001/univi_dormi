@@ -37,6 +37,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
 
       await _model.loadUserData();
       _model.notices = await _model.noticeService.getNotices(limit: 3);
+      await _model.loadApplicationData();
 
       setState(() {
         _model.isLoading = false;
@@ -371,71 +372,97 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                       Padding(
                         padding: EdgeInsetsDirectional.fromSTEB(
                             23.0, 10.0, 0.0, 0.0),
-                        child: Container(
-                          width: MediaQuery.sizeOf(context).width * 0.43,
-                          height: MediaQuery.sizeOf(context).height * 0.107,
-                          decoration: BoxDecoration(
-                            color: FlutterFlowTheme.of(context).info,
-                            borderRadius: BorderRadius.circular(8.0),
-                            border: Border.all(
-                              color: Color(0xFFB3B8BD),
+                        child: InkWell(
+                          splashColor: Colors.transparent,
+                          focusColor: Colors.transparent,
+                          hoverColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          onTap: () async {
+                            context.pushNamed(ApplicationListWidget.routeName);
+                          },
+                          child: Container(
+                            width: MediaQuery.sizeOf(context).width * 0.43,
+                            height: MediaQuery.sizeOf(context).height * 0.107,
+                            decoration: BoxDecoration(
+                              color: FlutterFlowTheme.of(context).info,
+                              borderRadius: BorderRadius.circular(8.0),
+                              border: Border.all(
+                                color: Color(0xFFB3B8BD),
+                              ),
                             ),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              Expanded(
-                                child: Padding(
-                                  padding: EdgeInsetsDirectional.fromSTEB(
-                                      12.0, 10.0, 0.0, 0.0),
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: [
-                                      Align(
-                                        alignment:
-                                            AlignmentDirectional(-0.64, -0.47),
-                                        child: Padding(
-                                          padding:
-                                              EdgeInsetsDirectional.fromSTEB(
-                                                  0.0, 5.0, 0.0, 0.0),
-                                          child: Text(
-                                            '이번 달 참석자 수',
-                                            style: FlutterFlowTheme.of(context)
-                                                .bodyMedium
-                                                .override(
-                                                  font: GoogleFonts.inter(
-                                                    fontWeight: FontWeight.w600,
-                                                    fontStyle:
-                                                        FlutterFlowTheme.of(
-                                                                context)
-                                                            .bodyMedium
-                                                            .fontStyle,
-                                                  ),
-                                                  fontSize: 12.0,
-                                                  letterSpacing: 0.0,
-                                                  fontWeight: FontWeight.w600,
-                                                  fontStyle:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .bodyMedium
-                                                          .fontStyle,
-                                                ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                Expanded(
+                                  child: Padding(
+                                    padding: EdgeInsetsDirectional.fromSTEB(
+                                        12.0, 10.0, 0.0, 0.0),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: [
+                                        Align(
+                                          alignment: AlignmentDirectional(
+                                              -0.64, -0.47),
+                                          child: Padding(
+                                            padding:
+                                                EdgeInsetsDirectional.fromSTEB(
+                                                    0.0, 5.0, 0.0, 0.0),
+                                            child: Text(
+                                              '신청 목록',
+                                              style:
+                                                  FlutterFlowTheme.of(context)
+                                                      .bodyMedium
+                                                      .override(
+                                                        font: GoogleFonts.inter(
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          fontStyle:
+                                                              FlutterFlowTheme.of(
+                                                                      context)
+                                                                  .bodyMedium
+                                                                  .fontStyle,
+                                                        ),
+                                                        fontSize: 12.0,
+                                                        letterSpacing: 0.0,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        fontStyle:
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .bodyMedium
+                                                                .fontStyle,
+                                                      ),
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      Align(
-                                        alignment:
-                                            AlignmentDirectional(-0.67, 0.57),
-                                        child: Padding(
-                                          padding:
-                                              EdgeInsetsDirectional.fromSTEB(
-                                                  0.0, 5.0, 0.0, 0.0),
-                                          child: Text(
-                                            '100%',
-                                            style: FlutterFlowTheme.of(context)
-                                                .headlineLarge
-                                                .override(
-                                                  font: GoogleFonts.interTight(
+                                        Align(
+                                          alignment:
+                                              AlignmentDirectional(-0.67, 0.57),
+                                          child: Padding(
+                                            padding:
+                                                EdgeInsetsDirectional.fromSTEB(
+                                                    0.0, 5.0, 0.0, 0.0),
+                                            child: Text(
+                                              '${_model.applicationCounts.values.fold(0, (sum, count) => sum + count)}',
+                                              style: FlutterFlowTheme.of(
+                                                      context)
+                                                  .headlineLarge
+                                                  .override(
+                                                    font:
+                                                        GoogleFonts.interTight(
+                                                      fontWeight:
+                                                          FlutterFlowTheme.of(
+                                                                  context)
+                                                              .headlineLarge
+                                                              .fontWeight,
+                                                      fontStyle:
+                                                          FlutterFlowTheme.of(
+                                                                  context)
+                                                              .headlineLarge
+                                                              .fontStyle,
+                                                    ),
+                                                    fontSize: 23.0,
+                                                    letterSpacing: 0.0,
                                                     fontWeight:
                                                         FlutterFlowTheme.of(
                                                                 context)
@@ -447,37 +474,25 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                                             .headlineLarge
                                                             .fontStyle,
                                                   ),
-                                                  fontSize: 23.0,
-                                                  letterSpacing: 0.0,
-                                                  fontWeight:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .headlineLarge
-                                                          .fontWeight,
-                                                  fontStyle:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .headlineLarge
-                                                          .fontStyle,
-                                                ),
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Expanded(
-                                child: Align(
-                                  alignment: AlignmentDirectional(0.74, 0.08),
-                                  child: Icon(
-                                    Icons.check_circle_outline_sharp,
-                                    color: Color(0xFF429F74),
-                                    size: 35.0,
+                                Expanded(
+                                  child: Align(
+                                    alignment: AlignmentDirectional(0.74, 0.08),
+                                    child: Icon(
+                                      Icons.list_alt,
+                                      color: Color(0xFF3C63B7),
+                                      size: 35.0,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -632,7 +647,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                             padding: EdgeInsetsDirectional.fromSTEB(
                                 23.0, 0.0, 0.0, 0.0),
                             child: Text(
-                              '발표',
+                              '공지사항',
                               style: FlutterFlowTheme.of(context)
                                   .headlineLarge
                                   .override(

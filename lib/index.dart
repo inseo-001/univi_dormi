@@ -1,5 +1,7 @@
 // Export pages
 export '/home_page/home_page/home_page_widget.dart' show HomePageWidget;
+export '/home_page/application_list/application_list_widget.dart'
+    show ApplicationListWidget;
 export '/start_page/start_page/start_page_widget.dart' show StartPageWidget;
 export '/sign_up_pasge/login_main/login_main_widget.dart' show LoginMainWidget;
 export '/join_page/join_main/join_main_widget.dart' show JoinMainWidget;
