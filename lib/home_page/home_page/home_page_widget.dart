@@ -822,6 +822,11 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                                 highlightColor:
                                                     Colors.transparent,
                                                 onTap: () async {
+                                                  print(
+                                                      '🔍 HomePageWidget - 공지사항 클릭: ${notice.title}');
+                                                  print(
+                                                      '🔍 HomePageWidget - notice.id: ${notice.id}');
+
                                                   // 조회수 증가
                                                   if (notice.id != null) {
                                                     try {
@@ -835,9 +840,11 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                                     }
                                                   }
 
+                                                  print(
+                                                      '🔍 HomePageWidget - 상세 페이지로 이동: ${notice.id ?? ''}');
                                                   context.pushNamed(
                                                       NoticeBigWidget.routeName,
-                                                      extra: <String, dynamic>{
+                                                      queryParameters: {
                                                         'noticeId':
                                                             notice.id ?? '',
                                                       });

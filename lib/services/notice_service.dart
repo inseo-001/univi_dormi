@@ -100,13 +100,21 @@ class NoticeService {
   // 공지사항 상세 정보 가져오기
   Future<Notice?> getNoticeById(String noticeId) async {
     try {
+      print('🔍 NoticeService - getNoticeById 호출: $noticeId');
+
       final doc = await _firestore.collection('notices').doc(noticeId).get();
 
+      print('🔍 NoticeService - 문서 존재 여부: ${doc.exists}');
+      print('🔍 NoticeService - 문서 데이터: ${doc.data()}');
+
       if (!doc.exists) {
+        print('⚠️ NoticeService - 문서가 존재하지 않음: $noticeId');
         return null;
       }
 
-      return Notice.fromFirestore(doc);
+      final notice = Notice.fromFirestore(doc);
+      print('🔍 NoticeService - 변환된 공지사항: ${notice.title}');
+      return notice;
     } catch (e) {
       print('❌ 공지사항 상세 정보 가져오기 오류: $e');
       throw Exception('공지사항을 가져오는 중 오류가 발생했습니다: $e');

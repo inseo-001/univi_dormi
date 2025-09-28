@@ -386,6 +386,11 @@ class _NoticeMainWidgetState extends State<NoticeMainWidget> {
                                           hoverColor: Colors.transparent,
                                           highlightColor: Colors.transparent,
                                           onTap: () async {
+                                            print(
+                                                '🔍 NoticeMainWidget - 공지사항 클릭: ${notice.title}');
+                                            print(
+                                                '🔍 NoticeMainWidget - notice.id: ${notice.id}');
+
                                             // 조회수 증가
                                             if (notice.id != null) {
                                               try {
@@ -399,9 +404,11 @@ class _NoticeMainWidgetState extends State<NoticeMainWidget> {
                                               }
                                             }
 
+                                            print(
+                                                '🔍 NoticeMainWidget - 상세 페이지로 이동: ${notice.id ?? ''}');
                                             context.pushNamed(
                                                 NoticeBigWidget.routeName,
-                                                extra: <String, dynamic>{
+                                                queryParameters: {
                                                   'noticeId': notice.id ?? '',
                                                 });
                                           },

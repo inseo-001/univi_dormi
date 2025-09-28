@@ -8,9 +8,7 @@ import 'notice_big_model.dart';
 export 'notice_big_model.dart';
 
 class NoticeBigWidget extends StatefulWidget {
-  const NoticeBigWidget({super.key, this.noticeId});
-
-  final String? noticeId;
+  const NoticeBigWidget({super.key});
 
   static String routeName = 'NoticeBig';
   static String routePath = '/noticeBig';
@@ -28,12 +26,16 @@ class _NoticeBigWidgetState extends State<NoticeBigWidget> {
   void initState() {
     super.initState();
     _model = createModel(context, () => NoticeBigModel());
+    // initState에서 공지사항 로드
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadNotice();
+    });
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _loadNotice();
+    // didChangeDependencies에서 매번 호출하지 않고, initState에서만 호출
   }
 
   Future<void> _loadNotice() async {
@@ -42,19 +44,26 @@ class _NoticeBigWidgetState extends State<NoticeBigWidget> {
         _model.isLoading = true;
       });
 
-      // arguments에서 noticeId 가져오기
-      final extra =
-          ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-      final noticeId = extra?['noticeId'] as String?;
+      // 쿼리 파라미터에서 noticeId 가져오기
+      final state = GoRouterState.of(context);
+      final noticeId = state.uri.queryParameters['noticeId'];
+
+      print(
+          '🔍 NoticeBigWidget - GoRouterState queryParameters: ${state.uri.queryParameters}');
+      print('🔍 NoticeBigWidget - 최종 noticeId: $noticeId');
 
       if (noticeId != null && noticeId.isNotEmpty) {
+        print('🔍 NoticeBigWidget - 특정 공지사항 로드 시작: $noticeId');
         // 특정 공지사항 로드
         _model.notice = await _model.noticeService.getNoticeById(noticeId);
+        print('🔍 NoticeBigWidget - 로드된 공지사항: ${_model.notice?.title}');
       } else {
+        print('🔍 NoticeBigWidget - noticeId가 없어서 첫 번째 공지사항 로드');
         // 첫 번째 공지사항 로드 (기존 방식)
         final notices = await _model.noticeService.getNotices(limit: 1);
         if (notices.isNotEmpty) {
           _model.notice = notices.first;
+          print('🔍 NoticeBigWidget - 첫 번째 공지사항 로드: ${_model.notice?.title}');
         }
       }
 
@@ -62,7 +71,7 @@ class _NoticeBigWidgetState extends State<NoticeBigWidget> {
         _model.isLoading = false;
       });
     } catch (e) {
-      print('공지사항 로딩 오류: $e');
+      print('❌ 공지사항 로딩 오류: $e');
       setState(() {
         _model.isLoading = false;
       });
