@@ -40,7 +40,6 @@ class _ProfileMainWidgetState extends State<ProfileMainWidget> {
   @override
   void dispose() {
     _model.dispose();
-
     super.dispose();
   }
 
@@ -58,7 +57,6 @@ class _ProfileMainWidgetState extends State<ProfileMainWidget> {
           top: true,
           child: ListView(
             padding: EdgeInsets.zero,
-            // 오버플로우 방지를 위해 ListView 속성 조정
             primary: true,
             scrollDirection: Axis.vertical,
             children: [
@@ -80,7 +78,7 @@ class _ProfileMainWidgetState extends State<ProfileMainWidget> {
                             size: 26.0,
                           ),
                           onPressed: () async {
-                            // ⚠️ 수정: 라우팅 오류 해결
+                            // 라우팅
                             context.pushNamed('menuMain');
                           },
                         ),
@@ -104,7 +102,7 @@ class _ProfileMainWidgetState extends State<ProfileMainWidget> {
                             width: 50.0,
                             height: 50.0,
                             clipBehavior: Clip.antiAlias,
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               shape: BoxShape.circle,
                             ),
                             child: Image.network(
@@ -117,7 +115,7 @@ class _ProfileMainWidgetState extends State<ProfileMainWidget> {
                       Container(
                         width: 100.0,
                         height: 100.0,
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           color: Colors.white,
                         ),
                         child: Column(
@@ -135,13 +133,15 @@ class _ProfileMainWidgetState extends State<ProfileMainWidget> {
                                     .override(
                                   font: GoogleFonts.inter(
                                     fontWeight: FontWeight.bold,
-                                    fontStyle: FlutterFlowTheme.of(context)
+                                    fontStyle:
+                                    FlutterFlowTheme.of(context)
                                         .bodyMedium
                                         .fontStyle,
                                   ),
                                   letterSpacing: 0.0,
                                   fontWeight: FontWeight.bold,
-                                  fontStyle: FlutterFlowTheme.of(context)
+                                  fontStyle:
+                                  FlutterFlowTheme.of(context)
                                       .bodyMedium
                                       .fontStyle,
                                 ),
@@ -157,19 +157,23 @@ class _ProfileMainWidgetState extends State<ProfileMainWidget> {
                                     .bodyMedium
                                     .override(
                                   font: GoogleFonts.inter(
-                                    fontWeight: FlutterFlowTheme.of(context)
+                                    fontWeight:
+                                    FlutterFlowTheme.of(context)
                                         .bodyMedium
                                         .fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context)
+                                    fontStyle:
+                                    FlutterFlowTheme.of(context)
                                         .bodyMedium
                                         .fontStyle,
                                   ),
                                   fontSize: 10.0,
                                   letterSpacing: 0.0,
-                                  fontWeight: FlutterFlowTheme.of(context)
+                                  fontWeight:
+                                  FlutterFlowTheme.of(context)
                                       .bodyMedium
                                       .fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context)
+                                  fontStyle:
+                                  FlutterFlowTheme.of(context)
                                       .bodyMedium
                                       .fontStyle,
                                 ),
@@ -178,54 +182,24 @@ class _ProfileMainWidgetState extends State<ProfileMainWidget> {
                           ],
                         ),
                       ),
-                      Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(
-                            140.0, 0.0, 0.0, 0.0),
-                        child: FlutterFlowIconButton(
-                          borderRadius: 8.0,
-                          buttonSize: 40.0,
-                          icon: Icon(
-                            Icons.arrow_forward_ios,
-                            color: Color(0xFFC4C4C4),
-                            size: 20.0,
-                          ),
-                          onPressed: () {
-                            print('IconButton pressed ...');
-                          },
-                        ),
-                      ),
+                      // ⛔️ 상단 이름 옆 화살표 제거됨 (불필요 기능)
                     ],
                   ),
                   Column(
                     mainAxisSize: MainAxisSize.max,
                     children: [
-                      Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            // 🟢 수정: 오버플로우 해결 (405.3 -> 90%)
-                            width: MediaQuery.sizeOf(context).width * 0.9,
-                            height: 35.29,
-                            decoration: BoxDecoration(
-                              color: Color(0x1BBAB9B9),
-                              borderRadius: BorderRadius.circular(24.0),
-                            ),
-                          ),
-                        ],
-                      ),
                       Padding(
-                        padding:
-                        EdgeInsetsDirectional.fromSTEB(0.0, 20.0, 0.0, 0.0),
+                        padding: EdgeInsetsDirectional.fromSTEB(
+                            0.0, 20.0, 0.0, 0.0),
                         child: Column(
                           mainAxisSize: MainAxisSize.max,
                           children: [
                             Container(
-                              // 🟢 수정: 오버플로우 해결 (344.2 -> 90%)
+                              // 커뮤니티 카드 배경 옅게
                               width: MediaQuery.sizeOf(context).width * 0.9,
                               height: 162.0,
                               decoration: BoxDecoration(
-                                color: Color(0x1BBAB9B9),
+                                color: const Color(0x14BAB9B9),
                                 borderRadius: BorderRadius.circular(24.0),
                               ),
                               child: Column(
@@ -303,20 +277,21 @@ class _ProfileMainWidgetState extends State<ProfileMainWidget> {
                                             ),
                                           ),
                                         ),
+                                        const Spacer(),
                                         Padding(
                                           padding:
                                           EdgeInsetsDirectional.fromSTEB(
-                                              210.0, 0.0, 0.0, 0.0),
+                                              0.0, 0.0, 8.0, 0.0),
                                           child: FlutterFlowIconButton(
                                             borderRadius: 8.0,
                                             buttonSize: 40.0,
-                                            icon: Icon(
+                                            icon: const Icon(
                                               Icons.arrow_forward_ios,
                                               color: Color(0xFFC4C4C4),
                                               size: 20.0,
                                             ),
                                             onPressed: () {
-                                              print('IconButton pressed ...');
+                                              // TODO: 이동
                                             },
                                           ),
                                         ),
@@ -364,20 +339,21 @@ class _ProfileMainWidgetState extends State<ProfileMainWidget> {
                                             ),
                                           ),
                                         ),
+                                        const Spacer(),
                                         Padding(
                                           padding:
                                           EdgeInsetsDirectional.fromSTEB(
-                                              215.0, 0.0, 0.0, 0.0),
+                                              0.0, 0.0, 8.0, 0.0),
                                           child: FlutterFlowIconButton(
                                             borderRadius: 8.0,
                                             buttonSize: 40.0,
-                                            icon: Icon(
+                                            icon: const Icon(
                                               Icons.arrow_forward_ios,
                                               color: Color(0xFFC4C4C4),
                                               size: 20.0,
                                             ),
                                             onPressed: () {
-                                              print('IconButton pressed ...');
+                                              // TODO: 이동
                                             },
                                           ),
                                         ),
@@ -406,11 +382,11 @@ class _ProfileMainWidgetState extends State<ProfileMainWidget> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               Container(
-                                // 🟢 수정: 오버플로우 해결 (344.2 -> 90%)
+                                // 이용약관 카드 배경 옅게
                                 width: MediaQuery.sizeOf(context).width * 0.9,
                                 height: 239.81,
                                 decoration: BoxDecoration(
-                                  color: Color(0x1BBAB9B9),
+                                  color: const Color(0x14BAB9B9),
                                   borderRadius: BorderRadius.circular(24.0),
                                 ),
                                 child: Padding(
@@ -434,7 +410,8 @@ class _ProfileMainWidgetState extends State<ProfileMainWidget> {
                                               FlutterFlowTheme.of(context)
                                                   .bodyMedium
                                                   .override(
-                                                font: GoogleFonts.inter(
+                                                font:
+                                                GoogleFonts.inter(
                                                   fontWeight:
                                                   FontWeight.w900,
                                                   fontStyle:
@@ -457,6 +434,7 @@ class _ProfileMainWidgetState extends State<ProfileMainWidget> {
                                           ),
                                         ],
                                       ),
+                                      // 어플 버전 행 (오른쪽 정렬 + '베타 버전')
                                       Padding(
                                         padding: EdgeInsetsDirectional.fromSTEB(
                                             0.0, 18.0, 0.0, 8.0),
@@ -500,12 +478,13 @@ class _ProfileMainWidgetState extends State<ProfileMainWidget> {
                                                 ),
                                               ),
                                             ),
+                                            const Spacer(),
                                             Padding(
                                               padding: EdgeInsetsDirectional
                                                   .fromSTEB(
-                                                  180.0, 0.0, 0.0, 0.0),
+                                                  0.0, 0.0, 24.0, 0.0),
                                               child: Text(
-                                                '3.8.17',
+                                                '베타 버전', // ← 변경된 표시
                                                 style:
                                                 FlutterFlowTheme.of(context)
                                                     .bodyMedium
@@ -540,6 +519,7 @@ class _ProfileMainWidgetState extends State<ProfileMainWidget> {
                                           ],
                                         ),
                                       ),
+                                      // 서비스 약관
                                       Row(
                                         mainAxisSize: MainAxisSize.max,
                                         children: [
@@ -553,7 +533,8 @@ class _ProfileMainWidgetState extends State<ProfileMainWidget> {
                                               FlutterFlowTheme.of(context)
                                                   .bodyMedium
                                                   .override(
-                                                font: GoogleFonts.inter(
+                                                font:
+                                                GoogleFonts.inter(
                                                   fontWeight:
                                                   FlutterFlowTheme.of(
                                                       context)
@@ -579,25 +560,27 @@ class _ProfileMainWidgetState extends State<ProfileMainWidget> {
                                               ),
                                             ),
                                           ),
+                                          const Spacer(),
                                           Padding(
                                             padding:
                                             EdgeInsetsDirectional.fromSTEB(
-                                                170.0, 0.0, 0.0, 0.0),
+                                                0.0, 0.0, 8.0, 0.0),
                                             child: FlutterFlowIconButton(
                                               borderRadius: 8.0,
                                               buttonSize: 40.0,
-                                              icon: Icon(
+                                              icon: const Icon(
                                                 Icons.arrow_forward_ios,
                                                 color: Color(0xFFC4C4C4),
                                                 size: 20.0,
                                               ),
                                               onPressed: () {
-                                                print('IconButton pressed ...');
+                                                // TODO: 이동
                                               },
                                             ),
                                           ),
                                         ],
                                       ),
+                                      // 개인 정보 보호 정책
                                       Row(
                                         mainAxisSize: MainAxisSize.max,
                                         children: [
@@ -611,7 +594,8 @@ class _ProfileMainWidgetState extends State<ProfileMainWidget> {
                                               FlutterFlowTheme.of(context)
                                                   .bodyMedium
                                                   .override(
-                                                font: GoogleFonts.inter(
+                                                font:
+                                                GoogleFonts.inter(
                                                   fontWeight:
                                                   FlutterFlowTheme.of(
                                                       context)
@@ -637,25 +621,27 @@ class _ProfileMainWidgetState extends State<ProfileMainWidget> {
                                               ),
                                             ),
                                           ),
+                                          const Spacer(),
                                           Padding(
                                             padding:
                                             EdgeInsetsDirectional.fromSTEB(
-                                                158.0, 0.0, 0.0, 0.0),
+                                                0.0, 0.0, 8.0, 0.0),
                                             child: FlutterFlowIconButton(
                                               borderRadius: 8.0,
                                               buttonSize: 40.0,
-                                              icon: Icon(
+                                              icon: const Icon(
                                                 Icons.arrow_forward_ios,
                                                 color: Color(0xFFC4C4C4),
                                                 size: 20.0,
                                               ),
                                               onPressed: () {
-                                                print('IconButton pressed ...');
+                                                // TODO: 이동
                                               },
                                             ),
                                           ),
                                         ],
                                       ),
+                                      // 청소년 보호 정책
                                       Row(
                                         mainAxisSize: MainAxisSize.max,
                                         children: [
@@ -669,7 +655,8 @@ class _ProfileMainWidgetState extends State<ProfileMainWidget> {
                                               FlutterFlowTheme.of(context)
                                                   .bodyMedium
                                                   .override(
-                                                font: GoogleFonts.inter(
+                                                font:
+                                                GoogleFonts.inter(
                                                   fontWeight:
                                                   FlutterFlowTheme.of(
                                                       context)
@@ -695,20 +682,21 @@ class _ProfileMainWidgetState extends State<ProfileMainWidget> {
                                               ),
                                             ),
                                           ),
+                                          const Spacer(),
                                           Padding(
                                             padding:
                                             EdgeInsetsDirectional.fromSTEB(
-                                                170.0, 0.0, 0.0, 0.0),
+                                                0.0, 0.0, 8.0, 0.0),
                                             child: FlutterFlowIconButton(
                                               borderRadius: 8.0,
                                               buttonSize: 40.0,
-                                              icon: Icon(
+                                              icon: const Icon(
                                                 Icons.arrow_forward_ios,
                                                 color: Color(0xFFC4C4C4),
                                                 size: 20.0,
                                               ),
                                               onPressed: () {
-                                                print('IconButton pressed ...');
+                                                // TODO: 이동
                                               },
                                             ),
                                           ),
@@ -736,7 +724,6 @@ class _ProfileMainWidgetState extends State<ProfileMainWidget> {
                       mainAxisSize: MainAxisSize.max,
                       children: [
                         Container(
-                          // 🟢 수정: 오버플로우 해결 (344.2 -> 90%)
                           width: MediaQuery.sizeOf(context).width * 0.9,
                           height: 52.0,
                           decoration: BoxDecoration(
@@ -746,16 +733,16 @@ class _ProfileMainWidgetState extends State<ProfileMainWidget> {
                           ),
                           child: FFButtonWidget(
                             onPressed: () {
-                              print('Button pressed ...');
+                              // TODO: 로그아웃
                             },
                             text: '로그아웃',
                             options: FFButtonOptions(
                               height: 40.0,
                               padding: EdgeInsetsDirectional.fromSTEB(
                                   16.0, 0.0, 16.0, 0.0),
-                              iconPadding: EdgeInsetsDirectional.fromSTEB(
+                              iconPadding: const EdgeInsetsDirectional.fromSTEB(
                                   0.0, 0.0, 0.0, 0.0),
-                              color: Color(0xFF0E1534),
+                              color: const Color(0xFF0E1534),
                               textStyle: FlutterFlowTheme.of(context)
                                   .titleSmall
                                   .override(
