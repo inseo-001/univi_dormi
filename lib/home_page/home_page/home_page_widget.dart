@@ -26,6 +26,64 @@ class _HomePageWidgetState extends State<HomePageWidget> {
   void initState() {
     super.initState();
     _model = createModel(context, () => HomePageModel());
+    _loadNotices();
+  }
+
+  Future<void> _loadNotices() async {
+    try {
+      setState(() {
+        _model.isLoading = true;
+      });
+
+      await _model.loadUserData();
+      _model.notices = await _model.noticeService.getNotices(limit: 3);
+
+      setState(() {
+        _model.isLoading = false;
+      });
+    } catch (e) {
+      print('공지사항 로딩 오류: $e');
+      setState(() {
+        _model.isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _createTestNotice() async {
+    try {
+      print('📢 앱에서 테스트 공지사항 생성 시작');
+
+      final noticeId = await _model.noticeService.createNotice(
+        title: '앱 테스트 공지사항 - ${DateTime.now().toString()}',
+        content: '이것은 앱에서 생성한 테스트 공지사항입니다. 정상적으로 표시되는지 확인해보세요.',
+        author: '앱 테스트',
+        isImportant: true,
+        category: '테스트',
+      );
+
+      print('✅ 앱 테스트 공지사항 생성 완료: $noticeId');
+
+      // 생성 후 목록 새로고침
+      await _loadNotices();
+
+      // 성공 메시지 표시
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('테스트 공지사항이 생성되었습니다!'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } catch (e) {
+      print('❌ 앱 테스트 공지사항 생성 오류: $e');
+
+      // 오류 메시지 표시
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('테스트 공지사항 생성 실패: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   @override
@@ -210,7 +268,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                           alignment:
                                               AlignmentDirectional(0.71, -0.42),
                                           child: Text(
-                                            '이민구',
+                                            '${_model.userName ?? '사용자'}',
                                             style: FlutterFlowTheme.of(context)
                                                 .titleMedium
                                                 .override(
@@ -432,7 +490,12 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                           hoverColor: Colors.transparent,
                           highlightColor: Colors.transparent,
                           onTap: () async {
+                            await _loadNotices(); // 새로고침
                             context.pushNamed(NoticeMainWidget.routeName);
+                          },
+                          onLongPress: () async {
+                            // 테스트 공지사항 생성 (길게 누르기)
+                            await _createTestNotice();
                           },
                           child: Container(
                             width: 168.9,
@@ -691,50 +754,371 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                 color: Color(0xFFB3B8BD),
                               ),
                             ),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.max,
-                              children: [
-                                Padding(
-                                  padding: EdgeInsetsDirectional.fromSTEB(
-                                      0.0, 5.0, 0.0, 0.0),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: [
-                                      Expanded(
-                                        child: Padding(
-                                          padding:
-                                              EdgeInsetsDirectional.fromSTEB(
-                                                  10.0, 5.0, 0.0, 0.0),
-                                          child: Text(
-                                            '겨울방학 접근 안내',
-                                            style: FlutterFlowTheme.of(context)
-                                                .headlineSmall
-                                                .override(
-                                                  font: GoogleFonts.interTight(
-                                                    fontWeight: FontWeight.w600,
-                                                    fontStyle:
-                                                        FlutterFlowTheme.of(
-                                                                context)
-                                                            .headlineSmall
-                                                            .fontStyle,
-                                                  ),
-                                                  fontSize: 14.0,
-                                                  letterSpacing: 0.0,
-                                                  fontWeight: FontWeight.w600,
-                                                  fontStyle:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .headlineSmall
-                                                          .fontStyle,
-                                                ),
-                                          ),
+                            child: _model.isLoading
+                                ? Center(
+                                    child: CircularProgressIndicator(
+                                      color:
+                                          FlutterFlowTheme.of(context).primary,
+                                    ),
+                                  )
+                                : _model.notices.isEmpty
+                                    ? Center(
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Icon(
+                                              Icons.notifications_none,
+                                              color:
+                                                  FlutterFlowTheme.of(context)
+                                                      .secondaryText,
+                                              size: 40.0,
+                                            ),
+                                            SizedBox(height: 8.0),
+                                            Text(
+                                              '공지사항이 없습니다',
+                                              style:
+                                                  FlutterFlowTheme.of(context)
+                                                      .bodyMedium
+                                                      .override(
+                                                        color:
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .secondaryText,
+                                                        fontSize: 14.0,
+                                                        letterSpacing: 0.0,
+                                                      ),
+                                            ),
+                                          ],
                                         ),
+                                      )
+                                    : Column(
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: [
+                                          // 첫 번째 공지사항 (메인)
+                                          Expanded(
+                                            child: InkWell(
+                                              splashColor: Colors.transparent,
+                                              focusColor: Colors.transparent,
+                                              hoverColor: Colors.transparent,
+                                              highlightColor:
+                                                  Colors.transparent,
+                                              onTap: () async {
+                                                context.pushNamed(
+                                                    NoticeMainWidget.routeName);
+                                              },
+                                              child: Container(
+                                                width: double.infinity,
+                                                padding: EdgeInsetsDirectional
+                                                    .fromSTEB(
+                                                        10.0, 10.0, 10.0, 5.0),
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        if (_model.notices[0]
+                                                            .isImportant)
+                                                          Container(
+                                                            margin:
+                                                                EdgeInsetsDirectional
+                                                                    .fromSTEB(
+                                                                        0.0,
+                                                                        0.0,
+                                                                        5.0,
+                                                                        0.0),
+                                                            padding:
+                                                                EdgeInsetsDirectional
+                                                                    .fromSTEB(
+                                                                        4.0,
+                                                                        2.0,
+                                                                        4.0,
+                                                                        2.0),
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              color: Color(
+                                                                  0xFFFF6B6B),
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          4.0),
+                                                            ),
+                                                            child: Text(
+                                                              '중요',
+                                                              style: FlutterFlowTheme
+                                                                      .of(context)
+                                                                  .bodySmall
+                                                                  .override(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    fontSize:
+                                                                        8.0,
+                                                                    letterSpacing:
+                                                                        0.0,
+                                                                  ),
+                                                            ),
+                                                          ),
+                                                        Expanded(
+                                                          child: Text(
+                                                            _model.notices[0]
+                                                                .title,
+                                                            style: FlutterFlowTheme
+                                                                    .of(context)
+                                                                .headlineSmall
+                                                                .override(
+                                                                  font: GoogleFonts
+                                                                      .interTight(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w600,
+                                                                    fontStyle: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .headlineSmall
+                                                                        .fontStyle,
+                                                                  ),
+                                                                  fontSize:
+                                                                      14.0,
+                                                                  letterSpacing:
+                                                                      0.0,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600,
+                                                                  fontStyle: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .headlineSmall
+                                                                      .fontStyle,
+                                                                ),
+                                                            maxLines: 2,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    SizedBox(height: 5.0),
+                                                    Text(
+                                                      _model.notices[0]
+                                                          .formattedDate,
+                                                      style:
+                                                          FlutterFlowTheme.of(
+                                                                  context)
+                                                              .bodySmall
+                                                              .override(
+                                                                color: FlutterFlowTheme.of(
+                                                                        context)
+                                                                    .secondaryText,
+                                                                fontSize: 10.0,
+                                                                letterSpacing:
+                                                                    0.0,
+                                                              ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          Divider(height: 1.0, thickness: 1.0),
+                                          // 두 번째 공지사항
+                                          if (_model.notices.length > 1)
+                                            Expanded(
+                                              child: InkWell(
+                                                splashColor: Colors.transparent,
+                                                focusColor: Colors.transparent,
+                                                hoverColor: Colors.transparent,
+                                                highlightColor:
+                                                    Colors.transparent,
+                                                onTap: () async {
+                                                  context.pushNamed(
+                                                      NoticeMainWidget
+                                                          .routeName);
+                                                },
+                                                child: Container(
+                                                  width: double.infinity,
+                                                  padding: EdgeInsetsDirectional
+                                                      .fromSTEB(
+                                                          10.0, 5.0, 10.0, 5.0),
+                                                  child: Row(
+                                                    children: [
+                                                      if (_model.notices[1]
+                                                          .isImportant)
+                                                        Container(
+                                                          margin:
+                                                              EdgeInsetsDirectional
+                                                                  .fromSTEB(
+                                                                      0.0,
+                                                                      0.0,
+                                                                      5.0,
+                                                                      0.0),
+                                                          padding:
+                                                              EdgeInsetsDirectional
+                                                                  .fromSTEB(
+                                                                      4.0,
+                                                                      2.0,
+                                                                      4.0,
+                                                                      2.0),
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            color: Color(
+                                                                0xFFFF6B6B),
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        4.0),
+                                                          ),
+                                                          child: Text(
+                                                            '중요',
+                                                            style: FlutterFlowTheme
+                                                                    .of(context)
+                                                                .bodySmall
+                                                                .override(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  fontSize: 8.0,
+                                                                  letterSpacing:
+                                                                      0.0,
+                                                                ),
+                                                          ),
+                                                        ),
+                                                      Expanded(
+                                                        child: Text(
+                                                          _model
+                                                              .notices[1].title,
+                                                          style: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .bodyMedium
+                                                              .override(
+                                                                fontSize: 12.0,
+                                                                letterSpacing:
+                                                                    0.0,
+                                                              ),
+                                                          maxLines: 1,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                        ),
+                                                      ),
+                                                      Text(
+                                                        _model.notices[1]
+                                                            .formattedDate,
+                                                        style:
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .bodySmall
+                                                                .override(
+                                                                  color: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .secondaryText,
+                                                                  fontSize: 9.0,
+                                                                  letterSpacing:
+                                                                      0.0,
+                                                                ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          // 세 번째 공지사항
+                                          if (_model.notices.length > 2)
+                                            Expanded(
+                                              child: InkWell(
+                                                splashColor: Colors.transparent,
+                                                focusColor: Colors.transparent,
+                                                hoverColor: Colors.transparent,
+                                                highlightColor:
+                                                    Colors.transparent,
+                                                onTap: () async {
+                                                  context.pushNamed(
+                                                      NoticeMainWidget
+                                                          .routeName);
+                                                },
+                                                child: Container(
+                                                  width: double.infinity,
+                                                  padding: EdgeInsetsDirectional
+                                                      .fromSTEB(10.0, 5.0, 10.0,
+                                                          10.0),
+                                                  child: Row(
+                                                    children: [
+                                                      if (_model.notices[2]
+                                                          .isImportant)
+                                                        Container(
+                                                          margin:
+                                                              EdgeInsetsDirectional
+                                                                  .fromSTEB(
+                                                                      0.0,
+                                                                      0.0,
+                                                                      5.0,
+                                                                      0.0),
+                                                          padding:
+                                                              EdgeInsetsDirectional
+                                                                  .fromSTEB(
+                                                                      4.0,
+                                                                      2.0,
+                                                                      4.0,
+                                                                      2.0),
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            color: Color(
+                                                                0xFFFF6B6B),
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        4.0),
+                                                          ),
+                                                          child: Text(
+                                                            '중요',
+                                                            style: FlutterFlowTheme
+                                                                    .of(context)
+                                                                .bodySmall
+                                                                .override(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  fontSize: 8.0,
+                                                                  letterSpacing:
+                                                                      0.0,
+                                                                ),
+                                                          ),
+                                                        ),
+                                                      Expanded(
+                                                        child: Text(
+                                                          _model
+                                                              .notices[2].title,
+                                                          style: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .bodyMedium
+                                                              .override(
+                                                                fontSize: 12.0,
+                                                                letterSpacing:
+                                                                    0.0,
+                                                              ),
+                                                          maxLines: 1,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                        ),
+                                                      ),
+                                                      Text(
+                                                        _model.notices[2]
+                                                            .formattedDate,
+                                                        style:
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .bodySmall
+                                                                .override(
+                                                                  color: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .secondaryText,
+                                                                  fontSize: 9.0,
+                                                                  letterSpacing:
+                                                                      0.0,
+                                                                ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                        ],
                                       ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
                           ),
                         ),
                       ],

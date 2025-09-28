@@ -57,16 +57,16 @@ class GlobalMessageListener {
           _currentStudentId = userData['studentId'];
         }
       } else {
-        // 임시 사용자 정보 (테스트용)
-        _currentStudentId = '20230709';
-        _currentUserName = '이민구';
+        // 사용자가 로그인되지 않은 경우
+        _currentStudentId = null;
+        _currentUserName = null;
       }
 
       print('🔔 현재 사용자: $_currentUserName ($_currentStudentId)');
     } catch (e) {
       print('🔔 사용자 정보 가져오기 오류: $e');
-      _currentStudentId = '20230709';
-      _currentUserName = '이민구';
+      _currentStudentId = null;
+      _currentUserName = null;
     }
   }
 

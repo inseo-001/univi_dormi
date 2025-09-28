@@ -48,11 +48,11 @@ class MassageDetailRoommateCopyModel
       currentUserId = user.uid;
       _getUserInfo();
     } else {
-      // 임시 사용자 정보 설정 (학생 시뮬레이션)
-      print('Firebase 인증 사용자가 없어 임시 사용자 정보 설정');
-      currentUserId = 'student_001';
-      currentUserName = '이민구';
-      currentStudentId = '20230709';
+      // 사용자가 로그인되지 않은 경우
+      print('Firebase 인증 사용자가 없음');
+      currentUserId = null;
+      currentUserName = null;
+      currentStudentId = null;
 
       // 빈 메시지 목록으로 시작
       messages = [];

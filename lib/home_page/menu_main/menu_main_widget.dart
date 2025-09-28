@@ -2,7 +2,6 @@ import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
-import '/services/score_service.dart';
 import '/index.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -33,6 +32,7 @@ class _MenuMainWidgetState extends State<MenuMainWidget> {
   }
 
   Future<void> _loadData() async {
+    await _model.loadUserData();
     await _model.loadScoreData();
     if (mounted) {
       setState(() {});
@@ -70,30 +70,30 @@ class _MenuMainWidgetState extends State<MenuMainWidget> {
                     children: [
                       Padding(
                         padding:
-                        EdgeInsetsDirectional.fromSTEB(30.0, 0.0, 0.0, 0.0),
+                            EdgeInsetsDirectional.fromSTEB(30.0, 0.0, 0.0, 0.0),
                         child: Text(
-                          '이민구 님',
+                          '${_model.userName ?? '사용자'} 님',
                           style: FlutterFlowTheme.of(context)
                               .headlineMedium
                               .override(
-                            font: GoogleFonts.interTight(
-                              fontWeight: FlutterFlowTheme.of(context)
-                                  .headlineMedium
-                                  .fontWeight,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .headlineMedium
-                                  .fontStyle,
-                            ),
-                            color: Color(0xFF020000),
-                            fontSize: 22.0,
-                            letterSpacing: 0.0,
-                            fontWeight: FlutterFlowTheme.of(context)
-                                .headlineMedium
-                                .fontWeight,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .headlineMedium
-                                .fontStyle,
-                          ),
+                                font: GoogleFonts.interTight(
+                                  fontWeight: FlutterFlowTheme.of(context)
+                                      .headlineMedium
+                                      .fontWeight,
+                                  fontStyle: FlutterFlowTheme.of(context)
+                                      .headlineMedium
+                                      .fontStyle,
+                                ),
+                                color: Color(0xFF020000),
+                                fontSize: 22.0,
+                                letterSpacing: 0.0,
+                                fontWeight: FlutterFlowTheme.of(context)
+                                    .headlineMedium
+                                    .fontWeight,
+                                fontStyle: FlutterFlowTheme.of(context)
+                                    .headlineMedium
+                                    .fontStyle,
+                              ),
                         ),
                       ),
                       Padding(
@@ -167,25 +167,25 @@ class _MenuMainWidgetState extends State<MenuMainWidget> {
                               textStyle: FlutterFlowTheme.of(context)
                                   .titleSmall
                                   .override(
-                                font: GoogleFonts.interTight(
-                                  fontWeight: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontStyle,
-                                ),
-                                color: FlutterFlowTheme.of(context)
-                                    .primaryText,
-                                fontSize: 10.0,
-                                letterSpacing: 0.0,
-                                fontWeight: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .fontStyle,
-                              ),
+                                    font: GoogleFonts.interTight(
+                                      fontWeight: FlutterFlowTheme.of(context)
+                                          .titleSmall
+                                          .fontWeight,
+                                      fontStyle: FlutterFlowTheme.of(context)
+                                          .titleSmall
+                                          .fontStyle,
+                                    ),
+                                    color: FlutterFlowTheme.of(context)
+                                        .primaryText,
+                                    fontSize: 10.0,
+                                    letterSpacing: 0.0,
+                                    fontWeight: FlutterFlowTheme.of(context)
+                                        .titleSmall
+                                        .fontWeight,
+                                    fontStyle: FlutterFlowTheme.of(context)
+                                        .titleSmall
+                                        .fontStyle,
+                                  ),
                               elevation: 0.0,
                               borderRadius: BorderRadius.only(
                                 bottomLeft: Radius.circular(8.0),
@@ -199,7 +199,7 @@ class _MenuMainWidgetState extends State<MenuMainWidget> {
                       ),
                       Padding(
                         padding:
-                        EdgeInsetsDirectional.fromSTEB(0.0, 10.0, 0.0, 0.0),
+                            EdgeInsetsDirectional.fromSTEB(0.0, 10.0, 0.0, 0.0),
                         child: Container(
                           width: 108.0,
                           height: 35.0,
@@ -230,25 +230,25 @@ class _MenuMainWidgetState extends State<MenuMainWidget> {
                               textStyle: FlutterFlowTheme.of(context)
                                   .titleSmall
                                   .override(
-                                font: GoogleFonts.interTight(
-                                  fontWeight: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontStyle,
-                                ),
-                                color: FlutterFlowTheme.of(context)
-                                    .primaryText,
-                                fontSize: 10.0,
-                                letterSpacing: 0.0,
-                                fontWeight: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .fontStyle,
-                              ),
+                                    font: GoogleFonts.interTight(
+                                      fontWeight: FlutterFlowTheme.of(context)
+                                          .titleSmall
+                                          .fontWeight,
+                                      fontStyle: FlutterFlowTheme.of(context)
+                                          .titleSmall
+                                          .fontStyle,
+                                    ),
+                                    color: FlutterFlowTheme.of(context)
+                                        .primaryText,
+                                    fontSize: 10.0,
+                                    letterSpacing: 0.0,
+                                    fontWeight: FlutterFlowTheme.of(context)
+                                        .titleSmall
+                                        .fontWeight,
+                                    fontStyle: FlutterFlowTheme.of(context)
+                                        .titleSmall
+                                        .fontStyle,
+                                  ),
                               elevation: 0.0,
                               borderRadius: BorderRadius.only(
                                 bottomLeft: Radius.circular(0.0),
@@ -262,7 +262,7 @@ class _MenuMainWidgetState extends State<MenuMainWidget> {
                       ),
                       Padding(
                         padding:
-                        EdgeInsetsDirectional.fromSTEB(0.0, 10.0, 0.0, 0.0),
+                            EdgeInsetsDirectional.fromSTEB(0.0, 10.0, 0.0, 0.0),
                         child: Container(
                           width: 108.0,
                           height: 35.0,
@@ -293,25 +293,25 @@ class _MenuMainWidgetState extends State<MenuMainWidget> {
                               textStyle: FlutterFlowTheme.of(context)
                                   .titleSmall
                                   .override(
-                                font: GoogleFonts.interTight(
-                                  fontWeight: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontStyle,
-                                ),
-                                color: FlutterFlowTheme.of(context)
-                                    .primaryText,
-                                fontSize: 10.0,
-                                letterSpacing: 0.0,
-                                fontWeight: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .fontStyle,
-                              ),
+                                    font: GoogleFonts.interTight(
+                                      fontWeight: FlutterFlowTheme.of(context)
+                                          .titleSmall
+                                          .fontWeight,
+                                      fontStyle: FlutterFlowTheme.of(context)
+                                          .titleSmall
+                                          .fontStyle,
+                                    ),
+                                    color: FlutterFlowTheme.of(context)
+                                        .primaryText,
+                                    fontSize: 10.0,
+                                    letterSpacing: 0.0,
+                                    fontWeight: FlutterFlowTheme.of(context)
+                                        .titleSmall
+                                        .fontWeight,
+                                    fontStyle: FlutterFlowTheme.of(context)
+                                        .titleSmall
+                                        .fontStyle,
+                                  ),
                               elevation: 0.0,
                               borderRadius: BorderRadius.only(
                                 bottomLeft: Radius.circular(0.0),
@@ -332,7 +332,7 @@ class _MenuMainWidgetState extends State<MenuMainWidget> {
                 children: [
                   Padding(
                     padding:
-                    EdgeInsetsDirectional.fromSTEB(0.0, 40.0, 0.0, 0.0),
+                        EdgeInsetsDirectional.fromSTEB(0.0, 40.0, 0.0, 0.0),
                     child: InkWell(
                       onTap: () async {
                         // 상벌점 데이터 새로고침 후 페이지 이동
@@ -354,20 +354,20 @@ class _MenuMainWidgetState extends State<MenuMainWidget> {
                                 style: FlutterFlowTheme.of(context)
                                     .headlineMedium
                                     .override(
-                                  font: GoogleFonts.interTight(
-                                    fontWeight: FontWeight.w600,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .headlineMedium
-                                        .fontStyle,
-                                  ),
-                                  color: Color(0xFF020000),
-                                  fontSize: 18.0,
-                                  letterSpacing: 0.0,
-                                  fontWeight: FontWeight.w600,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .headlineMedium
-                                      .fontStyle,
-                                ),
+                                      font: GoogleFonts.interTight(
+                                        fontWeight: FontWeight.w600,
+                                        fontStyle: FlutterFlowTheme.of(context)
+                                            .headlineMedium
+                                            .fontStyle,
+                                      ),
+                                      color: Color(0xFF020000),
+                                      fontSize: 18.0,
+                                      letterSpacing: 0.0,
+                                      fontWeight: FontWeight.w600,
+                                      fontStyle: FlutterFlowTheme.of(context)
+                                          .headlineMedium
+                                          .fontStyle,
+                                    ),
                               ),
                             ),
                           ),
@@ -382,7 +382,7 @@ class _MenuMainWidgetState extends State<MenuMainWidget> {
                 children: [
                   Padding(
                     padding:
-                    EdgeInsetsDirectional.fromSTEB(0.0, 20.0, 0.0, 0.0),
+                        EdgeInsetsDirectional.fromSTEB(0.0, 20.0, 0.0, 0.0),
                     child: Row(
                       mainAxisSize: MainAxisSize.max,
                       children: [
@@ -415,38 +415,38 @@ class _MenuMainWidgetState extends State<MenuMainWidget> {
                                       children: [
                                         Padding(
                                           padding:
-                                          EdgeInsetsDirectional.fromSTEB(
-                                              30.0, 0.0, 0.0, 0.0),
+                                              EdgeInsetsDirectional.fromSTEB(
+                                                  30.0, 0.0, 0.0, 0.0),
                                           child: Text(
                                             '상점',
                                             style: FlutterFlowTheme.of(context)
                                                 .titleLarge
                                                 .override(
-                                              font: GoogleFonts.interTight(
-                                                fontWeight:
-                                                FlutterFlowTheme.of(
-                                                    context)
-                                                    .titleLarge
-                                                    .fontWeight,
-                                                fontStyle:
-                                                FlutterFlowTheme.of(
-                                                    context)
-                                                    .titleLarge
-                                                    .fontStyle,
-                                              ),
-                                              fontSize: 15.0,
-                                              letterSpacing: 0.0,
-                                              fontWeight:
-                                              FlutterFlowTheme.of(
-                                                  context)
-                                                  .titleLarge
-                                                  .fontWeight,
-                                              fontStyle:
-                                              FlutterFlowTheme.of(
-                                                  context)
-                                                  .titleLarge
-                                                  .fontStyle,
-                                            ),
+                                                  font: GoogleFonts.interTight(
+                                                    fontWeight:
+                                                        FlutterFlowTheme.of(
+                                                                context)
+                                                            .titleLarge
+                                                            .fontWeight,
+                                                    fontStyle:
+                                                        FlutterFlowTheme.of(
+                                                                context)
+                                                            .titleLarge
+                                                            .fontStyle,
+                                                  ),
+                                                  fontSize: 15.0,
+                                                  letterSpacing: 0.0,
+                                                  fontWeight:
+                                                      FlutterFlowTheme.of(
+                                                              context)
+                                                          .titleLarge
+                                                          .fontWeight,
+                                                  fontStyle:
+                                                      FlutterFlowTheme.of(
+                                                              context)
+                                                          .titleLarge
+                                                          .fontStyle,
+                                                ),
                                           ),
                                         ),
                                         Expanded(
@@ -458,66 +458,66 @@ class _MenuMainWidgetState extends State<MenuMainWidget> {
                                             style: FlutterFlowTheme.of(context)
                                                 .bodyMedium
                                                 .override(
-                                              font: GoogleFonts.inter(
-                                                fontWeight:
-                                                FlutterFlowTheme.of(
-                                                    context)
-                                                    .bodyMedium
-                                                    .fontWeight,
-                                                fontStyle:
-                                                FlutterFlowTheme.of(
-                                                    context)
-                                                    .bodyMedium
-                                                    .fontStyle,
-                                              ),
-                                              color: Color(0xFF60A9F0),
-                                              letterSpacing: 0.0,
-                                              fontWeight:
-                                              FlutterFlowTheme.of(
-                                                  context)
-                                                  .bodyMedium
-                                                  .fontWeight,
-                                              fontStyle:
-                                              FlutterFlowTheme.of(
-                                                  context)
-                                                  .bodyMedium
-                                                  .fontStyle,
-                                            ),
+                                                  font: GoogleFonts.inter(
+                                                    fontWeight:
+                                                        FlutterFlowTheme.of(
+                                                                context)
+                                                            .bodyMedium
+                                                            .fontWeight,
+                                                    fontStyle:
+                                                        FlutterFlowTheme.of(
+                                                                context)
+                                                            .bodyMedium
+                                                            .fontStyle,
+                                                  ),
+                                                  color: Color(0xFF60A9F0),
+                                                  letterSpacing: 0.0,
+                                                  fontWeight:
+                                                      FlutterFlowTheme.of(
+                                                              context)
+                                                          .bodyMedium
+                                                          .fontWeight,
+                                                  fontStyle:
+                                                      FlutterFlowTheme.of(
+                                                              context)
+                                                          .bodyMedium
+                                                          .fontStyle,
+                                                ),
                                           ),
                                         ),
                                         Padding(
                                           padding:
-                                          EdgeInsetsDirectional.fromSTEB(
-                                              0.0, 0.0, 50.0, 0.0),
+                                              EdgeInsetsDirectional.fromSTEB(
+                                                  0.0, 0.0, 50.0, 0.0),
                                           child: Text(
                                             '점',
                                             style: FlutterFlowTheme.of(context)
                                                 .bodyMedium
                                                 .override(
-                                              font: GoogleFonts.inter(
-                                                fontWeight:
-                                                FlutterFlowTheme.of(
-                                                    context)
-                                                    .bodyMedium
-                                                    .fontWeight,
-                                                fontStyle:
-                                                FlutterFlowTheme.of(
-                                                    context)
-                                                    .bodyMedium
-                                                    .fontStyle,
-                                              ),
-                                              letterSpacing: 0.0,
-                                              fontWeight:
-                                              FlutterFlowTheme.of(
-                                                  context)
-                                                  .bodyMedium
-                                                  .fontWeight,
-                                              fontStyle:
-                                              FlutterFlowTheme.of(
-                                                  context)
-                                                  .bodyMedium
-                                                  .fontStyle,
-                                            ),
+                                                  font: GoogleFonts.inter(
+                                                    fontWeight:
+                                                        FlutterFlowTheme.of(
+                                                                context)
+                                                            .bodyMedium
+                                                            .fontWeight,
+                                                    fontStyle:
+                                                        FlutterFlowTheme.of(
+                                                                context)
+                                                            .bodyMedium
+                                                            .fontStyle,
+                                                  ),
+                                                  letterSpacing: 0.0,
+                                                  fontWeight:
+                                                      FlutterFlowTheme.of(
+                                                              context)
+                                                          .bodyMedium
+                                                          .fontWeight,
+                                                  fontStyle:
+                                                      FlutterFlowTheme.of(
+                                                              context)
+                                                          .bodyMedium
+                                                          .fontStyle,
+                                                ),
                                           ),
                                         ),
                                       ],
@@ -531,39 +531,39 @@ class _MenuMainWidgetState extends State<MenuMainWidget> {
                                       children: [
                                         Padding(
                                           padding:
-                                          EdgeInsetsDirectional.fromSTEB(
-                                              30.0, 0.0, 0.0, 0.0),
+                                              EdgeInsetsDirectional.fromSTEB(
+                                                  30.0, 0.0, 0.0, 0.0),
                                           child: Text(
                                             '벌점',
                                             textAlign: TextAlign.justify,
                                             style: FlutterFlowTheme.of(context)
                                                 .titleLarge
                                                 .override(
-                                              font: GoogleFonts.interTight(
-                                                fontWeight:
-                                                FlutterFlowTheme.of(
-                                                    context)
-                                                    .titleLarge
-                                                    .fontWeight,
-                                                fontStyle:
-                                                FlutterFlowTheme.of(
-                                                    context)
-                                                    .titleLarge
-                                                    .fontStyle,
-                                              ),
-                                              fontSize: 15.0,
-                                              letterSpacing: 0.0,
-                                              fontWeight:
-                                              FlutterFlowTheme.of(
-                                                  context)
-                                                  .titleLarge
-                                                  .fontWeight,
-                                              fontStyle:
-                                              FlutterFlowTheme.of(
-                                                  context)
-                                                  .titleLarge
-                                                  .fontStyle,
-                                            ),
+                                                  font: GoogleFonts.interTight(
+                                                    fontWeight:
+                                                        FlutterFlowTheme.of(
+                                                                context)
+                                                            .titleLarge
+                                                            .fontWeight,
+                                                    fontStyle:
+                                                        FlutterFlowTheme.of(
+                                                                context)
+                                                            .titleLarge
+                                                            .fontStyle,
+                                                  ),
+                                                  fontSize: 15.0,
+                                                  letterSpacing: 0.0,
+                                                  fontWeight:
+                                                      FlutterFlowTheme.of(
+                                                              context)
+                                                          .titleLarge
+                                                          .fontWeight,
+                                                  fontStyle:
+                                                      FlutterFlowTheme.of(
+                                                              context)
+                                                          .titleLarge
+                                                          .fontStyle,
+                                                ),
                                           ),
                                         ),
                                         Expanded(
@@ -575,68 +575,68 @@ class _MenuMainWidgetState extends State<MenuMainWidget> {
                                             style: FlutterFlowTheme.of(context)
                                                 .bodyMedium
                                                 .override(
-                                              font: GoogleFonts.inter(
-                                                fontWeight:
-                                                FlutterFlowTheme.of(
-                                                    context)
-                                                    .bodyMedium
-                                                    .fontWeight,
-                                                fontStyle:
-                                                FlutterFlowTheme.of(
-                                                    context)
-                                                    .bodyMedium
-                                                    .fontStyle,
-                                              ),
-                                              color: FlutterFlowTheme.of(
-                                                  context)
-                                                  .primaryText,
-                                              letterSpacing: 0.0,
-                                              fontWeight:
-                                              FlutterFlowTheme.of(
-                                                  context)
-                                                  .bodyMedium
-                                                  .fontWeight,
-                                              fontStyle:
-                                              FlutterFlowTheme.of(
-                                                  context)
-                                                  .bodyMedium
-                                                  .fontStyle,
-                                            ),
+                                                  font: GoogleFonts.inter(
+                                                    fontWeight:
+                                                        FlutterFlowTheme.of(
+                                                                context)
+                                                            .bodyMedium
+                                                            .fontWeight,
+                                                    fontStyle:
+                                                        FlutterFlowTheme.of(
+                                                                context)
+                                                            .bodyMedium
+                                                            .fontStyle,
+                                                  ),
+                                                  color: FlutterFlowTheme.of(
+                                                          context)
+                                                      .primaryText,
+                                                  letterSpacing: 0.0,
+                                                  fontWeight:
+                                                      FlutterFlowTheme.of(
+                                                              context)
+                                                          .bodyMedium
+                                                          .fontWeight,
+                                                  fontStyle:
+                                                      FlutterFlowTheme.of(
+                                                              context)
+                                                          .bodyMedium
+                                                          .fontStyle,
+                                                ),
                                           ),
                                         ),
                                         Padding(
                                           padding:
-                                          EdgeInsetsDirectional.fromSTEB(
-                                              0.0, 0.0, 50.0, 0.0),
+                                              EdgeInsetsDirectional.fromSTEB(
+                                                  0.0, 0.0, 50.0, 0.0),
                                           child: Text(
                                             '점',
                                             style: FlutterFlowTheme.of(context)
                                                 .bodyMedium
                                                 .override(
-                                              font: GoogleFonts.inter(
-                                                fontWeight:
-                                                FlutterFlowTheme.of(
-                                                    context)
-                                                    .bodyMedium
-                                                    .fontWeight,
-                                                fontStyle:
-                                                FlutterFlowTheme.of(
-                                                    context)
-                                                    .bodyMedium
-                                                    .fontStyle,
-                                              ),
-                                              letterSpacing: 0.0,
-                                              fontWeight:
-                                              FlutterFlowTheme.of(
-                                                  context)
-                                                  .bodyMedium
-                                                  .fontWeight,
-                                              fontStyle:
-                                              FlutterFlowTheme.of(
-                                                  context)
-                                                  .bodyMedium
-                                                  .fontStyle,
-                                            ),
+                                                  font: GoogleFonts.inter(
+                                                    fontWeight:
+                                                        FlutterFlowTheme.of(
+                                                                context)
+                                                            .bodyMedium
+                                                            .fontWeight,
+                                                    fontStyle:
+                                                        FlutterFlowTheme.of(
+                                                                context)
+                                                            .bodyMedium
+                                                            .fontStyle,
+                                                  ),
+                                                  letterSpacing: 0.0,
+                                                  fontWeight:
+                                                      FlutterFlowTheme.of(
+                                                              context)
+                                                          .bodyMedium
+                                                          .fontWeight,
+                                                  fontStyle:
+                                                      FlutterFlowTheme.of(
+                                                              context)
+                                                          .bodyMedium
+                                                          .fontStyle,
+                                                ),
                                           ),
                                         ),
                                       ],
@@ -660,26 +660,26 @@ class _MenuMainWidgetState extends State<MenuMainWidget> {
                     children: [
                       Padding(
                         padding:
-                        EdgeInsetsDirectional.fromSTEB(30.0, 0.0, 0.0, 0.0),
+                            EdgeInsetsDirectional.fromSTEB(30.0, 0.0, 0.0, 0.0),
                         child: Text(
                           '모든 서비스',
                           style: FlutterFlowTheme.of(context)
                               .headlineMedium
                               .override(
-                            font: GoogleFonts.interTight(
-                              fontWeight: FontWeight.w600,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .headlineMedium
-                                  .fontStyle,
-                            ),
-                            color: Color(0xFF020000),
-                            fontSize: 18.0,
-                            letterSpacing: 0.0,
-                            fontWeight: FontWeight.w600,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .headlineMedium
-                                .fontStyle,
-                          ),
+                                font: GoogleFonts.interTight(
+                                  fontWeight: FontWeight.w600,
+                                  fontStyle: FlutterFlowTheme.of(context)
+                                      .headlineMedium
+                                      .fontStyle,
+                                ),
+                                color: Color(0xFF020000),
+                                fontSize: 18.0,
+                                letterSpacing: 0.0,
+                                fontWeight: FontWeight.w600,
+                                fontStyle: FlutterFlowTheme.of(context)
+                                    .headlineMedium
+                                    .fontStyle,
+                              ),
                         ),
                       ),
                     ],
@@ -694,8 +694,9 @@ class _MenuMainWidgetState extends State<MenuMainWidget> {
                 children: [
                   Padding(
                     padding:
-                    EdgeInsetsDirectional.fromSTEB(0.0, 40.0, 0.0, 0.0),
-                    child: InkWell( // 전체 탭 영역
+                        EdgeInsetsDirectional.fromSTEB(0.0, 40.0, 0.0, 0.0),
+                    child: InkWell(
+                      // 전체 탭 영역
                       splashColor: Colors.transparent,
                       focusColor: Colors.transparent,
                       hoverColor: Colors.transparent,
@@ -723,7 +724,8 @@ class _MenuMainWidgetState extends State<MenuMainWidget> {
                               ),
                             ),
                           ),
-                          Expanded( // Container를 Expanded로 감싸 오버플로우 수정
+                          Expanded(
+                            // Container를 Expanded로 감싸 오버플로우 수정
                             child: Container(
                               // width: 249.8, // 고정 너비 제거
                               height: 55.0,
@@ -741,29 +743,30 @@ class _MenuMainWidgetState extends State<MenuMainWidget> {
                                       style: FlutterFlowTheme.of(context)
                                           .bodyLarge
                                           .override(
-                                        font: GoogleFonts.inter(
-                                          fontWeight:
-                                          FlutterFlowTheme.of(context)
-                                              .bodyLarge
-                                              .fontWeight,
-                                          fontStyle:
-                                          FlutterFlowTheme.of(context)
-                                              .bodyLarge
-                                              .fontStyle,
-                                        ),
-                                        letterSpacing: 0.0,
-                                        fontWeight:
-                                        FlutterFlowTheme.of(context)
-                                            .bodyLarge
-                                            .fontWeight,
-                                        fontStyle:
-                                        FlutterFlowTheme.of(context)
-                                            .bodyLarge
-                                            .fontStyle,
-                                      ),
+                                            font: GoogleFonts.inter(
+                                              fontWeight:
+                                                  FlutterFlowTheme.of(context)
+                                                      .bodyLarge
+                                                      .fontWeight,
+                                              fontStyle:
+                                                  FlutterFlowTheme.of(context)
+                                                      .bodyLarge
+                                                      .fontStyle,
+                                            ),
+                                            letterSpacing: 0.0,
+                                            fontWeight:
+                                                FlutterFlowTheme.of(context)
+                                                    .bodyLarge
+                                                    .fontWeight,
+                                            fontStyle:
+                                                FlutterFlowTheme.of(context)
+                                                    .bodyLarge
+                                                    .fontStyle,
+                                          ),
                                     ),
                                   ),
-                                  Expanded( // 오른쪽에 텍스트 정렬을 위해 Expanded 추가
+                                  Expanded(
+                                    // 오른쪽에 텍스트 정렬을 위해 Expanded 추가
                                     child: Align(
                                       alignment: AlignmentDirectional(1.0, 0.0),
                                       child: Padding(
@@ -774,26 +777,28 @@ class _MenuMainWidgetState extends State<MenuMainWidget> {
                                           style: FlutterFlowTheme.of(context)
                                               .labelSmall
                                               .override(
-                                            font: GoogleFonts.inter(
-                                              fontWeight:
-                                              FlutterFlowTheme.of(context)
-                                                  .labelSmall
-                                                  .fontWeight,
-                                              fontStyle:
-                                              FlutterFlowTheme.of(context)
-                                                  .labelSmall
-                                                  .fontStyle,
-                                            ),
-                                            letterSpacing: 0.0,
-                                            fontWeight:
-                                            FlutterFlowTheme.of(context)
-                                                .labelSmall
-                                                .fontWeight,
-                                            fontStyle:
-                                            FlutterFlowTheme.of(context)
-                                                .labelSmall
-                                                .fontStyle,
-                                          ),
+                                                font: GoogleFonts.inter(
+                                                  fontWeight:
+                                                      FlutterFlowTheme.of(
+                                                              context)
+                                                          .labelSmall
+                                                          .fontWeight,
+                                                  fontStyle:
+                                                      FlutterFlowTheme.of(
+                                                              context)
+                                                          .labelSmall
+                                                          .fontStyle,
+                                                ),
+                                                letterSpacing: 0.0,
+                                                fontWeight:
+                                                    FlutterFlowTheme.of(context)
+                                                        .labelSmall
+                                                        .fontWeight,
+                                                fontStyle:
+                                                    FlutterFlowTheme.of(context)
+                                                        .labelSmall
+                                                        .fontStyle,
+                                              ),
                                         ),
                                       ),
                                     ),
@@ -816,8 +821,9 @@ class _MenuMainWidgetState extends State<MenuMainWidget> {
                 children: [
                   Padding(
                     padding:
-                    EdgeInsetsDirectional.fromSTEB(0.0, 20.0, 0.0, 0.0),
-                    child: InkWell( // 전체 탭 영역
+                        EdgeInsetsDirectional.fromSTEB(0.0, 20.0, 0.0, 0.0),
+                    child: InkWell(
+                      // 전체 탭 영역
                       splashColor: Colors.transparent,
                       focusColor: Colors.transparent,
                       hoverColor: Colors.transparent,
@@ -845,7 +851,8 @@ class _MenuMainWidgetState extends State<MenuMainWidget> {
                               ),
                             ),
                           ),
-                          Expanded( // Container를 Expanded로 감싸 오버플로우 수정
+                          Expanded(
+                            // Container를 Expanded로 감싸 오버플로우 수정
                             child: Container(
                               // width: 249.8, // 고정 너비 제거
                               height: 55.0,
@@ -863,29 +870,30 @@ class _MenuMainWidgetState extends State<MenuMainWidget> {
                                       style: FlutterFlowTheme.of(context)
                                           .bodyLarge
                                           .override(
-                                        font: GoogleFonts.inter(
-                                          fontWeight:
-                                          FlutterFlowTheme.of(context)
-                                              .bodyLarge
-                                              .fontWeight,
-                                          fontStyle:
-                                          FlutterFlowTheme.of(context)
-                                              .bodyLarge
-                                              .fontStyle,
-                                        ),
-                                        letterSpacing: 0.0,
-                                        fontWeight:
-                                        FlutterFlowTheme.of(context)
-                                            .bodyLarge
-                                            .fontWeight,
-                                        fontStyle:
-                                        FlutterFlowTheme.of(context)
-                                            .bodyLarge
-                                            .fontStyle,
-                                      ),
+                                            font: GoogleFonts.inter(
+                                              fontWeight:
+                                                  FlutterFlowTheme.of(context)
+                                                      .bodyLarge
+                                                      .fontWeight,
+                                              fontStyle:
+                                                  FlutterFlowTheme.of(context)
+                                                      .bodyLarge
+                                                      .fontStyle,
+                                            ),
+                                            letterSpacing: 0.0,
+                                            fontWeight:
+                                                FlutterFlowTheme.of(context)
+                                                    .bodyLarge
+                                                    .fontWeight,
+                                            fontStyle:
+                                                FlutterFlowTheme.of(context)
+                                                    .bodyLarge
+                                                    .fontStyle,
+                                          ),
                                     ),
                                   ),
-                                  Expanded( // 오른쪽에 텍스트 정렬을 위해 Expanded 추가
+                                  Expanded(
+                                    // 오른쪽에 텍스트 정렬을 위해 Expanded 추가
                                     child: Align(
                                       alignment: AlignmentDirectional(1.0, 0.0),
                                       child: Padding(
@@ -896,26 +904,28 @@ class _MenuMainWidgetState extends State<MenuMainWidget> {
                                           style: FlutterFlowTheme.of(context)
                                               .labelSmall
                                               .override(
-                                            font: GoogleFonts.inter(
-                                              fontWeight:
-                                              FlutterFlowTheme.of(context)
-                                                  .labelSmall
-                                                  .fontWeight,
-                                              fontStyle:
-                                              FlutterFlowTheme.of(context)
-                                                  .labelSmall
-                                                  .fontStyle,
-                                            ),
-                                            letterSpacing: 0.0,
-                                            fontWeight:
-                                            FlutterFlowTheme.of(context)
-                                                .labelSmall
-                                                .fontWeight,
-                                            fontStyle:
-                                            FlutterFlowTheme.of(context)
-                                                .labelSmall
-                                                .fontStyle,
-                                          ),
+                                                font: GoogleFonts.inter(
+                                                  fontWeight:
+                                                      FlutterFlowTheme.of(
+                                                              context)
+                                                          .labelSmall
+                                                          .fontWeight,
+                                                  fontStyle:
+                                                      FlutterFlowTheme.of(
+                                                              context)
+                                                          .labelSmall
+                                                          .fontStyle,
+                                                ),
+                                                letterSpacing: 0.0,
+                                                fontWeight:
+                                                    FlutterFlowTheme.of(context)
+                                                        .labelSmall
+                                                        .fontWeight,
+                                                fontStyle:
+                                                    FlutterFlowTheme.of(context)
+                                                        .labelSmall
+                                                        .fontStyle,
+                                              ),
                                         ),
                                       ),
                                     ),
@@ -938,8 +948,9 @@ class _MenuMainWidgetState extends State<MenuMainWidget> {
                 children: [
                   Padding(
                     padding:
-                    EdgeInsetsDirectional.fromSTEB(0.0, 20.0, 0.0, 0.0),
-                    child: InkWell( // 전체 탭 영역
+                        EdgeInsetsDirectional.fromSTEB(0.0, 20.0, 0.0, 0.0),
+                    child: InkWell(
+                      // 전체 탭 영역
                       splashColor: Colors.transparent,
                       focusColor: Colors.transparent,
                       hoverColor: Colors.transparent,
@@ -967,7 +978,8 @@ class _MenuMainWidgetState extends State<MenuMainWidget> {
                               ),
                             ),
                           ),
-                          Expanded( // Container를 Expanded로 감싸 오버플로우 수정
+                          Expanded(
+                            // Container를 Expanded로 감싸 오버플로우 수정
                             child: Container(
                               // width: 249.8, // 고정 너비 제거
                               height: 55.0,
@@ -985,29 +997,30 @@ class _MenuMainWidgetState extends State<MenuMainWidget> {
                                       style: FlutterFlowTheme.of(context)
                                           .bodyLarge
                                           .override(
-                                        font: GoogleFonts.inter(
-                                          fontWeight:
-                                          FlutterFlowTheme.of(context)
-                                              .bodyLarge
-                                              .fontWeight,
-                                          fontStyle:
-                                          FlutterFlowTheme.of(context)
-                                              .bodyLarge
-                                              .fontStyle,
-                                        ),
-                                        letterSpacing: 0.0,
-                                        fontWeight:
-                                        FlutterFlowTheme.of(context)
-                                            .bodyLarge
-                                            .fontWeight,
-                                        fontStyle:
-                                        FlutterFlowTheme.of(context)
-                                            .bodyLarge
-                                            .fontStyle,
-                                      ),
+                                            font: GoogleFonts.inter(
+                                              fontWeight:
+                                                  FlutterFlowTheme.of(context)
+                                                      .bodyLarge
+                                                      .fontWeight,
+                                              fontStyle:
+                                                  FlutterFlowTheme.of(context)
+                                                      .bodyLarge
+                                                      .fontStyle,
+                                            ),
+                                            letterSpacing: 0.0,
+                                            fontWeight:
+                                                FlutterFlowTheme.of(context)
+                                                    .bodyLarge
+                                                    .fontWeight,
+                                            fontStyle:
+                                                FlutterFlowTheme.of(context)
+                                                    .bodyLarge
+                                                    .fontStyle,
+                                          ),
                                     ),
                                   ),
-                                  Expanded( // 오른쪽에 텍스트 정렬을 위해 Expanded 추가
+                                  Expanded(
+                                    // 오른쪽에 텍스트 정렬을 위해 Expanded 추가
                                     child: Align(
                                       alignment: AlignmentDirectional(1.0, 0.0),
                                       child: Padding(
@@ -1018,26 +1031,28 @@ class _MenuMainWidgetState extends State<MenuMainWidget> {
                                           style: FlutterFlowTheme.of(context)
                                               .labelSmall
                                               .override(
-                                            font: GoogleFonts.inter(
-                                              fontWeight:
-                                              FlutterFlowTheme.of(context)
-                                                  .labelSmall
-                                                  .fontWeight,
-                                              fontStyle:
-                                              FlutterFlowTheme.of(context)
-                                                  .labelSmall
-                                                  .fontStyle,
-                                            ),
-                                            letterSpacing: 0.0,
-                                            fontWeight:
-                                            FlutterFlowTheme.of(context)
-                                                .labelSmall
-                                                .fontWeight,
-                                            fontStyle:
-                                            FlutterFlowTheme.of(context)
-                                                .labelSmall
-                                                .fontStyle,
-                                          ),
+                                                font: GoogleFonts.inter(
+                                                  fontWeight:
+                                                      FlutterFlowTheme.of(
+                                                              context)
+                                                          .labelSmall
+                                                          .fontWeight,
+                                                  fontStyle:
+                                                      FlutterFlowTheme.of(
+                                                              context)
+                                                          .labelSmall
+                                                          .fontStyle,
+                                                ),
+                                                letterSpacing: 0.0,
+                                                fontWeight:
+                                                    FlutterFlowTheme.of(context)
+                                                        .labelSmall
+                                                        .fontWeight,
+                                                fontStyle:
+                                                    FlutterFlowTheme.of(context)
+                                                        .labelSmall
+                                                        .fontStyle,
+                                              ),
                                         ),
                                       ),
                                     ),
@@ -1060,15 +1075,15 @@ class _MenuMainWidgetState extends State<MenuMainWidget> {
                 children: [
                   Padding(
                     padding:
-                    EdgeInsetsDirectional.fromSTEB(0.0, 20.0, 0.0, 0.0),
-                    child: InkWell( // 전체 탭 영역
+                        EdgeInsetsDirectional.fromSTEB(0.0, 20.0, 0.0, 0.0),
+                    child: InkWell(
+                      // 전체 탭 영역
                       splashColor: Colors.transparent,
                       focusColor: Colors.transparent,
                       hoverColor: Colors.transparent,
                       highlightColor: Colors.transparent,
                       onTap: () async {
-                        context
-                            .pushNamed(CivilcomplaintMainWidget.routeName);
+                        context.pushNamed(CivilcomplaintMainWidget.routeName);
                       },
                       child: Row(
                         mainAxisSize: MainAxisSize.max,
@@ -1090,7 +1105,8 @@ class _MenuMainWidgetState extends State<MenuMainWidget> {
                               ),
                             ),
                           ),
-                          Expanded( // Container를 Expanded로 감싸 오버플로우 수정
+                          Expanded(
+                            // Container를 Expanded로 감싸 오버플로우 수정
                             child: Container(
                               // width: 249.8, // 고정 너비 제거
                               height: 55.0,
@@ -1108,29 +1124,30 @@ class _MenuMainWidgetState extends State<MenuMainWidget> {
                                       style: FlutterFlowTheme.of(context)
                                           .bodyLarge
                                           .override(
-                                        font: GoogleFonts.inter(
-                                          fontWeight:
-                                          FlutterFlowTheme.of(context)
-                                              .bodyLarge
-                                              .fontWeight,
-                                          fontStyle:
-                                          FlutterFlowTheme.of(context)
-                                              .bodyLarge
-                                              .fontStyle,
-                                        ),
-                                        letterSpacing: 0.0,
-                                        fontWeight:
-                                        FlutterFlowTheme.of(context)
-                                            .bodyLarge
-                                            .fontWeight,
-                                        fontStyle:
-                                        FlutterFlowTheme.of(context)
-                                            .bodyLarge
-                                            .fontStyle,
-                                      ),
+                                            font: GoogleFonts.inter(
+                                              fontWeight:
+                                                  FlutterFlowTheme.of(context)
+                                                      .bodyLarge
+                                                      .fontWeight,
+                                              fontStyle:
+                                                  FlutterFlowTheme.of(context)
+                                                      .bodyLarge
+                                                      .fontStyle,
+                                            ),
+                                            letterSpacing: 0.0,
+                                            fontWeight:
+                                                FlutterFlowTheme.of(context)
+                                                    .bodyLarge
+                                                    .fontWeight,
+                                            fontStyle:
+                                                FlutterFlowTheme.of(context)
+                                                    .bodyLarge
+                                                    .fontStyle,
+                                          ),
                                     ),
                                   ),
-                                  Expanded( // 오른쪽에 텍스트 정렬을 위해 Expanded 추가
+                                  Expanded(
+                                    // 오른쪽에 텍스트 정렬을 위해 Expanded 추가
                                     child: Align(
                                       alignment: AlignmentDirectional(1.0, 0.0),
                                       child: Padding(
@@ -1141,26 +1158,28 @@ class _MenuMainWidgetState extends State<MenuMainWidget> {
                                           style: FlutterFlowTheme.of(context)
                                               .labelSmall
                                               .override(
-                                            font: GoogleFonts.inter(
-                                              fontWeight:
-                                              FlutterFlowTheme.of(context)
-                                                  .labelSmall
-                                                  .fontWeight,
-                                              fontStyle:
-                                              FlutterFlowTheme.of(context)
-                                                  .labelSmall
-                                                  .fontStyle,
-                                            ),
-                                            letterSpacing: 0.0,
-                                            fontWeight:
-                                            FlutterFlowTheme.of(context)
-                                                .labelSmall
-                                                .fontWeight,
-                                            fontStyle:
-                                            FlutterFlowTheme.of(context)
-                                                .labelSmall
-                                                .fontStyle,
-                                          ),
+                                                font: GoogleFonts.inter(
+                                                  fontWeight:
+                                                      FlutterFlowTheme.of(
+                                                              context)
+                                                          .labelSmall
+                                                          .fontWeight,
+                                                  fontStyle:
+                                                      FlutterFlowTheme.of(
+                                                              context)
+                                                          .labelSmall
+                                                          .fontStyle,
+                                                ),
+                                                letterSpacing: 0.0,
+                                                fontWeight:
+                                                    FlutterFlowTheme.of(context)
+                                                        .labelSmall
+                                                        .fontWeight,
+                                                fontStyle:
+                                                    FlutterFlowTheme.of(context)
+                                                        .labelSmall
+                                                        .fontStyle,
+                                              ),
                                         ),
                                       ),
                                     ),
@@ -1183,7 +1202,7 @@ class _MenuMainWidgetState extends State<MenuMainWidget> {
                   // 로그아웃 버튼
                   Padding(
                     padding:
-                    EdgeInsetsDirectional.fromSTEB(20.0, 20.0, 20.0, 20.0),
+                        EdgeInsetsDirectional.fromSTEB(20.0, 20.0, 20.0, 20.0),
                     child: Container(
                       width: double.infinity,
                       height: 50.0,
@@ -1207,13 +1226,13 @@ class _MenuMainWidgetState extends State<MenuMainWidget> {
                               0.0, 0.0, 0.0, 0.0),
                           color: Colors.transparent,
                           textStyle:
-                          FlutterFlowTheme.of(context).titleSmall.override(
-                            font: GoogleFonts.inter(
-                              fontWeight: FontWeight.w600,
-                            ),
-                            color: Colors.red.shade700,
-                            letterSpacing: 0.0,
-                          ),
+                              FlutterFlowTheme.of(context).titleSmall.override(
+                                    font: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                    color: Colors.red.shade700,
+                                    letterSpacing: 0.0,
+                                  ),
                           elevation: 0.0,
                           borderRadius: BorderRadius.circular(8.0),
                         ),

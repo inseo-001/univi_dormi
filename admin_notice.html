@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>공지사항 관리</title>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        textarea {
+            height: 200px;
+            resize: vertical;
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border: 1px solid #f5c6cb;
+        }
+        .notice-list {
+            margin-top: 30px;
+        }
+        .notice-item {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 10px;
+            background-color: #f9f9f9;
+        }
+        .notice-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .notice-meta {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        .notice-content {
+            color: #555;
+            font-size: 14px;
+        }
+        .important-badge {
+            background-color: #ff6b6b;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 10px;
+            margin-left: 10px;
+        }
+        .delete-btn {
+            background-color: #dc3545;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+        .delete-btn:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📢 공지사항 관리</h1>
+        
+        <div id="message"></div>
+        
+        <form id="noticeForm">
+            <div class="form-group">
+                <label for="title">제목 *</label>
+                <input type="text" id="title" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="content">내용 *</label>
+                <textarea id="content" required></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="author">작성자 *</label>
+                <input type="text" id="author" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="category">카테고리</label>
+                <select id="category">
+                    <option value="">선택하세요</option>
+                    <option value="일반">일반</option>
+                    <option value="중요">중요</option>
+                    <option value="긴급">긴급</option>
+                    <option value="행사">행사</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="isImportant">
+                    <label for="isImportant">중요 공지사항</label>
+                </div>
+            </div>
+            
+            <button type="submit">공지사항 등록</button>
+            <button type="button" onclick="createTestNotice()" style="margin-left: 10px; background-color: #28a745;">테스트 공지사항 생성</button>
+        </form>
+        
+        <div class="notice-list">
+            <h2>등록된 공지사항</h2>
+            <div id="noticeList"></div>
+        </div>
+    </div>
+
+    <script>
+        // Firebase 설정 (실제 프로젝트 설정)
+        const firebaseConfig = {
+            apiKey: "AIzaSyALZObKyLk_Cik0H_qJ-IGBQUOR3hhlFko",
+            authDomain: "univia-db582.firebaseapp.com",
+            projectId: "univia-db582",
+            storageBucket: "univia-db582.firebasestorage.app",
+            messagingSenderId: "565193661532",
+            appId: "1:565193661532:web:804f0fa8dcf2e05ef89a99"
+        };
+
+        // Firebase 초기화
+        let db;
+        try {
+            firebase.initializeApp(firebaseConfig);
+            db = firebase.firestore();
+            console.log('✅ Firebase 초기화 성공');
+            console.log('📢 프로젝트 ID:', firebaseConfig.projectId);
+            
+            // Firebase 연결 테스트 및 notices 컬렉션 생성
+            db.collection('notices').doc('test').set({
+                title: 'Firebase 연결 테스트',
+                content: '이 문서는 Firebase 연결을 테스트하기 위한 문서입니다.',
+                author: '시스템',
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                isImportant: false,
+                category: '테스트'
+            }).then(() => {
+                console.log('✅ Firebase 연결 테스트 성공 - notices 컬렉션 생성됨');
+                // 테스트 문서 삭제
+                db.collection('notices').doc('test').delete().then(() => {
+                    console.log('✅ 테스트 문서 삭제 완료');
+                });
+            }).catch((error) => {
+                console.error('❌ Firebase 연결 테스트 실패:', error);
+                showMessage('Firebase 연결에 실패했습니다: ' + error.message, 'error');
+            });
+        } catch (error) {
+            console.error('❌ Firebase 초기화 실패:', error);
+            showMessage('Firebase 초기화에 실패했습니다: ' + error.message, 'error');
+        }
+
+        // 폼 제출 처리
+        document.getElementById('noticeForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if (!db) {
+                showMessage('Firebase가 초기화되지 않았습니다. 페이지를 새로고침해주세요.', 'error');
+                return;
+            }
+            
+            const title = document.getElementById('title').value;
+            const content = document.getElementById('content').value;
+            const author = document.getElementById('author').value;
+            const category = document.getElementById('category').value;
+            const isImportant = document.getElementById('isImportant').checked;
+            
+            if (!title || !content || !author) {
+                showMessage('제목, 내용, 작성자는 필수 입력 항목입니다.', 'error');
+                return;
+            }
+            
+            console.log('📢 공지사항 작성 시작:', { title, author, category, isImportant });
+            
+            try {
+                const noticeData = {
+                    title: title,
+                    content: content,
+                    author: author,
+                    category: category || null,
+                    isImportant: isImportant,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+                
+                console.log('📢 저장할 데이터:', noticeData);
+                
+                const docRef = await db.collection('notices').add(noticeData);
+                
+                console.log('✅ 공지사항 작성 완료:', docRef.id);
+                showMessage('공지사항이 성공적으로 등록되었습니다! (ID: ' + docRef.id + ')', 'success');
+                document.getElementById('noticeForm').reset();
+                
+                // 잠시 후 목록 새로고침
+                setTimeout(() => {
+                    loadNotices();
+                }, 1000);
+            } catch (error) {
+                console.error('❌ 공지사항 등록 오류:', error);
+                console.error('❌ 오류 상세:', error.code, error.message);
+                showMessage('공지사항 등록 중 오류가 발생했습니다: ' + error.message, 'error');
+            }
+        });
+
+        // 공지사항 목록 로드
+        async function loadNotices() {
+            try {
+                console.log('📢 공지사항 목록 로드 시작');
+                const snapshot = await db.collection('notices')
+                    .orderBy('createdAt', 'desc')
+                    .get();
+                
+                console.log('📢 웹에서 로드된 공지사항 수:', snapshot.size);
+                
+                const noticeList = document.getElementById('noticeList');
+                noticeList.innerHTML = '';
+                
+                if (snapshot.empty) {
+                    console.log('⚠️ 웹에서 공지사항이 없음');
+                    noticeList.innerHTML = '<p>등록된 공지사항이 없습니다.</p>';
+                    return;
+                }
+                
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    console.log('📢 웹 공지사항:', doc.id, data);
+                    const noticeItem = document.createElement('div');
+                    noticeItem.className = 'notice-item';
+                    noticeItem.innerHTML = `
+                        <div class="notice-title">
+                            ${data.title}
+                            ${data.isImportant ? '<span class="important-badge">중요</span>' : ''}
+                        </div>
+                        <div class="notice-meta">
+                            작성자: ${data.author} | 
+                            작성일: ${data.createdAt ? new Date(data.createdAt.seconds * 1000).toLocaleDateString('ko-KR') : '알 수 없음'}
+                            ${data.category ? ' | 카테고리: ' + data.category : ''}
+                        </div>
+                        <div class="notice-content">${data.content}</div>
+                        <button class="delete-btn" onclick="deleteNotice('${doc.id}')">삭제</button>
+                    `;
+                    noticeList.appendChild(noticeItem);
+                });
+                
+                console.log('✅ 웹 공지사항 목록 로드 완료');
+            } catch (error) {
+                console.error('❌ 웹 공지사항 목록 로드 오류:', error);
+                showMessage('공지사항 목록 로드 중 오류가 발생했습니다: ' + error.message, 'error');
+            }
+        }
+
+        // 테스트 공지사항 생성
+        async function createTestNotice() {
+            if (!db) {
+                showMessage('Firebase가 초기화되지 않았습니다. 페이지를 새로고침해주세요.', 'error');
+                return;
+            }
+            
+            try {
+                console.log('📢 테스트 공지사항 생성 시작');
+                
+                const testNotice = {
+                    title: '테스트 공지사항 - ' + new Date().toLocaleString(),
+                    content: '이것은 테스트용 공지사항입니다. 앱에서 정상적으로 표시되는지 확인해보세요.\n\n이 공지사항은 웹 관리자 페이지에서 자동으로 생성되었습니다.',
+                    author: '시스템 관리자',
+                    category: '테스트',
+                    isImportant: true,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+                
+                console.log('📢 테스트 공지사항 데이터:', testNotice);
+                
+                const docRef = await db.collection('notices').add(testNotice);
+                console.log('✅ 테스트 공지사항 생성 완료:', docRef.id);
+                showMessage('테스트 공지사항이 생성되었습니다! (ID: ' + docRef.id + ')', 'success');
+                
+                // 잠시 후 목록 새로고침
+                setTimeout(() => {
+                    loadNotices();
+                }, 1000);
+            } catch (error) {
+                console.error('❌ 테스트 공지사항 생성 오류:', error);
+                console.error('❌ 오류 상세:', error.code, error.message);
+                showMessage('테스트 공지사항 생성 중 오류가 발생했습니다: ' + error.message, 'error');
+            }
+        }
+
+        // 공지사항 삭제
+        async function deleteNotice(id) {
+            if (confirm('정말로 이 공지사항을 삭제하시겠습니까?')) {
+                try {
+                    await db.collection('notices').doc(id).delete();
+                    showMessage('공지사항이 삭제되었습니다.', 'success');
+                    loadNotices();
+                } catch (error) {
+                    showMessage('공지사항 삭제 중 오류가 발생했습니다: ' + error.message, 'error');
+                }
+            }
+        }
+
+        // 메시지 표시
+        function showMessage(message, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.innerHTML = `<div class="${type}">${message}</div>`;
+            setTimeout(() => {
+                messageDiv.innerHTML = '';
+            }, 5000);
+        }
+
+        // 페이지 로드 시 공지사항 목록 로드
+        // 페이지 로드 시 공지사항 목록 불러오기
+        setTimeout(() => {
+            console.log('📢 페이지 로드 완료, 공지사항 목록 로드 시작');
+            loadNotices();
+        }, 1000);
+    </script>
+</body>
+</html>

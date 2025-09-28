@@ -27,6 +27,14 @@ class _ProfileMainWidgetState extends State<ProfileMainWidget> {
   void initState() {
     super.initState();
     _model = createModel(context, () => ProfileMainModel());
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    await _model.loadUserData();
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override
@@ -119,7 +127,7 @@ class _ProfileMainWidgetState extends State<ProfileMainWidget> {
                               padding: EdgeInsetsDirectional.fromSTEB(
                                   0.0, 35.0, 38.0, 0.0),
                               child: Text(
-                                '이민구',
+                                '${_model.userName ?? '사용자'}',
                                 textAlign: TextAlign.start,
                                 style: FlutterFlowTheme.of(context)
                                     .bodyMedium

@@ -38,3 +38,7 @@ export '/score/score_reason/score_reason_widget.dart' show ScoreReasonWidget;
 export '/score/score_main/score_main_widget.dart' show ScoreMainWidget;
 export '/score/score_application/score_application_widget.dart'
     show ScoreApplicationWidget;
+
+// Export models
+export '/models/notice.dart' show Notice;
+export '/models/civil_complaint.dart' show CivilComplaint;

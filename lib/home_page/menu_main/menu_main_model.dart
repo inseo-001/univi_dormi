@@ -12,6 +12,9 @@ class MenuMainModel extends FlutterFlowModel<MenuMainWidget> {
   int rewardPoints = 0;
   int penaltyPoints = 0;
 
+  // 사용자 정보
+  String? userName;
+
   // 로그아웃 메서드
   Future<void> signOut(BuildContext context) async {
     try {
@@ -31,6 +34,23 @@ class MenuMainModel extends FlutterFlowModel<MenuMainWidget> {
     }
   }
 
+  // 사용자 정보 로드
+  Future<void> loadUserData() async {
+    try {
+      final user = _authService.currentUser;
+      if (user != null) {
+        final userData = await _authService.getUserData(user.uid);
+        userName = userData?['name'] ?? user.displayName ?? '사용자';
+      } else {
+        userName = '사용자';
+      }
+      print('👤 사용자 정보 로드: $userName');
+    } catch (e) {
+      print('❌ 사용자 정보 로드 오류: $e');
+      userName = '사용자';
+    }
+  }
+
   // 상벌점 데이터 로드 (빠른 로드)
   Future<void> loadScoreData() async {
     try {
@@ -45,6 +65,7 @@ class MenuMainModel extends FlutterFlowModel<MenuMainWidget> {
 
   @override
   void initState(BuildContext context) {
+    loadUserData();
     loadScoreData();
   }
 

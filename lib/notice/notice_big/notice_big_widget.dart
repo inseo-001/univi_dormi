@@ -26,6 +26,29 @@ class _NoticeBigWidgetState extends State<NoticeBigWidget> {
   void initState() {
     super.initState();
     _model = createModel(context, () => NoticeBigModel());
+    _loadNotice();
+  }
+
+  Future<void> _loadNotice() async {
+    try {
+      setState(() {
+        _model.isLoading = true;
+      });
+
+      final notices = await _model.noticeService.getNotices(limit: 1);
+      if (notices.isNotEmpty) {
+        _model.notice = notices.first;
+      }
+
+      setState(() {
+        _model.isLoading = false;
+      });
+    } catch (e) {
+      print('공지사항 로딩 오류: $e');
+      setState(() {
+        _model.isLoading = false;
+      });
+    }
   }
 
   @override
@@ -77,7 +100,7 @@ class _NoticeBigWidgetState extends State<NoticeBigWidget> {
                           padding: EdgeInsetsDirectional.fromSTEB(
                               10.0, 0.0, 0.0, 0.0),
                           child: Text(
-                            '공지 사항',
+                            '공지사항 상세',
                             style: FlutterFlowTheme.of(context)
                                 .titleLarge
                                 .override(
@@ -104,616 +127,175 @@ class _NoticeBigWidgetState extends State<NoticeBigWidget> {
                   ),
                 ],
               ),
-              Column(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(
-                            30.0, 10.0, 0.0, 0.0),
-                        child: Container(
-                          width: 330.0,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(8.0),
-                            shape: BoxShape.rectangle,
-                            border: Border.all(
-                              color: Color(0xFFABA5A5),
+              Expanded(
+                child: _model.isLoading
+                    ? Center(
+                        child: CircularProgressIndicator(
+                          color: FlutterFlowTheme.of(context).primary,
+                        ),
+                      )
+                    : _model.notice == null
+                        ? Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.notifications_none,
+                                  color: FlutterFlowTheme.of(context)
+                                      .secondaryText,
+                                  size: 60.0,
+                                ),
+                                SizedBox(height: 16.0),
+                                Text(
+                                  '공지사항을 불러올 수 없습니다',
+                                  style: FlutterFlowTheme.of(context)
+                                      .bodyLarge
+                                      .override(
+                                        color: FlutterFlowTheme.of(context)
+                                            .secondaryText,
+                                        fontSize: 16.0,
+                                        letterSpacing: 0.0,
+                                      ),
+                                ),
+                              ],
                             ),
-                          ),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              Column(
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsetsDirectional.fromSTEB(
-                                            20.0, 15.0, 0.0, 0.0),
-                                        child: Icon(
-                                          Icons.push_pin_outlined,
-                                          color: Color(0xFFD96D35),
-                                          size: 15.0,
-                                        ),
+                          )
+                        : SingleChildScrollView(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                Padding(
+                                  padding: EdgeInsetsDirectional.fromSTEB(
+                                      30.0, 20.0, 30.0, 0.0),
+                                  child: Container(
+                                    width: double.infinity,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(8.0),
+                                      border: Border.all(
+                                        color: Color(0xFFABA5A5),
                                       ),
-                                      Padding(
-                                        padding: EdgeInsetsDirectional.fromSTEB(
-                                            5.0, 13.0, 0.0, 0.0),
-                                        child: Container(
-                                          width: 30.0,
-                                          height: 14.0,
-                                          decoration: BoxDecoration(
-                                            color: Color(0xFFFBC9C9),
-                                            borderRadius:
-                                                BorderRadius.circular(8.0),
-                                          ),
-                                          child: Padding(
-                                            padding:
-                                                EdgeInsetsDirectional.fromSTEB(
-                                                    7.0, 0.0, 0.0, 0.0),
-                                            child: Text(
-                                              '중요',
-                                              style: FlutterFlowTheme.of(
-                                                      context)
-                                                  .displayLarge
-                                                  .override(
-                                                    font:
-                                                        GoogleFonts.interTight(
-                                                      fontWeight:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .displayLarge
-                                                              .fontWeight,
-                                                      fontStyle:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .displayLarge
-                                                              .fontStyle,
-                                                    ),
-                                                    color: Color(0xFFF80808),
-                                                    fontSize: 8.0,
-                                                    letterSpacing: 0.0,
-                                                    fontWeight:
-                                                        FlutterFlowTheme.of(
-                                                                context)
-                                                            .displayLarge
-                                                            .fontWeight,
-                                                    fontStyle:
-                                                        FlutterFlowTheme.of(
-                                                                context)
-                                                            .displayLarge
-                                                            .fontStyle,
-                                                  ),
+                                    ),
+                                    child: Padding(
+                                      padding: EdgeInsetsDirectional.fromSTEB(
+                                          20.0, 20.0, 20.0, 20.0),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          // 중요도 배지
+                                          if (_model.notice!.isImportant)
+                                            Container(
+                                              margin: EdgeInsetsDirectional
+                                                  .fromSTEB(
+                                                      0.0, 0.0, 0.0, 10.0),
+                                              padding: EdgeInsetsDirectional
+                                                  .fromSTEB(8.0, 4.0, 8.0, 4.0),
+                                              decoration: BoxDecoration(
+                                                color: Color(0xFFFBC9C9),
+                                                borderRadius:
+                                                    BorderRadius.circular(8.0),
+                                              ),
+                                              child: Text(
+                                                '중요',
+                                                style:
+                                                    FlutterFlowTheme.of(context)
+                                                        .bodySmall
+                                                        .override(
+                                                          color:
+                                                              Color(0xFFF80808),
+                                                          fontSize: 10.0,
+                                                          letterSpacing: 0.0,
+                                                        ),
+                                              ),
                                             ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              Column(
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsetsDirectional.fromSTEB(
-                                        10.0, 10.0, 0.0, 0.0),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.max,
-                                      children: [
-                                        Padding(
-                                          padding:
-                                              EdgeInsetsDirectional.fromSTEB(
-                                                  10.0, 5.0, 0.0, 0.0),
-                                          child: Text(
-                                            '겨울 방학 기간 출입 안내',
+                                          // 제목
+                                          Text(
+                                            _model.notice!.title,
                                             style: FlutterFlowTheme.of(context)
-                                                .headlineSmall
+                                                .headlineMedium
                                                 .override(
                                                   font: GoogleFonts.interTight(
                                                     fontWeight: FontWeight.w600,
-                                                    fontStyle:
-                                                        FlutterFlowTheme.of(
-                                                                context)
-                                                            .headlineSmall
-                                                            .fontStyle,
                                                   ),
-                                                  fontSize: 15.0,
+                                                  fontSize: 18.0,
                                                   letterSpacing: 0.0,
-                                                  fontWeight: FontWeight.w600,
-                                                  fontStyle:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .headlineSmall
-                                                          .fontStyle,
                                                 ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Column(
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsetsDirectional.fromSTEB(
-                                            20.0, 10.0, 0.0, 0.0),
-                                        child: Icon(
-                                          Icons.calendar_today_outlined,
-                                          color: Color(0xFF57636C),
-                                          size: 12.0,
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsetsDirectional.fromSTEB(
-                                            5.0, 10.0, 0.0, 0.0),
-                                        child: Text(
-                                          '2024-12-15',
-                                          style: FlutterFlowTheme.of(context)
-                                              .labelSmall
-                                              .override(
-                                                font: GoogleFonts.inter(
-                                                  fontWeight:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .labelSmall
-                                                          .fontWeight,
-                                                  fontStyle:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .labelSmall
-                                                          .fontStyle,
-                                                ),
-                                                letterSpacing: 0.0,
-                                                fontWeight:
-                                                    FlutterFlowTheme.of(context)
-                                                        .labelSmall
-                                                        .fontWeight,
-                                                fontStyle:
-                                                    FlutterFlowTheme.of(context)
-                                                        .labelSmall
-                                                        .fontStyle,
+                                          SizedBox(height: 10.0),
+                                          // 작성자 및 날짜
+                                          Row(
+                                            children: [
+                                              Icon(
+                                                Icons.person_outline,
+                                                color: Color(0xFF57636C),
+                                                size: 14.0,
                                               ),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsetsDirectional.fromSTEB(
-                                            15.0, 10.0, 0.0, 0.0),
-                                        child: Text(
-                                          '14:30',
-                                          style: FlutterFlowTheme.of(context)
-                                              .labelSmall
-                                              .override(
-                                                font: GoogleFonts.inter(
-                                                  fontWeight:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .labelSmall
-                                                          .fontWeight,
-                                                  fontStyle:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .labelSmall
-                                                          .fontStyle,
-                                                ),
-                                                letterSpacing: 0.0,
-                                                fontWeight:
+                                              SizedBox(width: 5.0),
+                                              Text(
+                                                _model.notice!.author,
+                                                style:
                                                     FlutterFlowTheme.of(context)
-                                                        .labelSmall
-                                                        .fontWeight,
-                                                fontStyle:
-                                                    FlutterFlowTheme.of(context)
-                                                        .labelSmall
-                                                        .fontStyle,
+                                                        .bodySmall
+                                                        .override(
+                                                          color:
+                                                              Color(0xFF57636C),
+                                                          fontSize: 12.0,
+                                                          letterSpacing: 0.0,
+                                                        ),
                                               ),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsetsDirectional.fromSTEB(
-                                            75.0, 13.0, 0.0, 0.0),
-                                        child: Icon(
-                                          Icons.remove_red_eye,
-                                          color: Color(0xFFA5A5A5),
-                                          size: 15.0,
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsetsDirectional.fromSTEB(
-                                            3.0, 13.0, 0.0, 0.0),
-                                        child: Text(
-                                          '30',
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyMedium
-                                              .override(
-                                                font: GoogleFonts.inter(
-                                                  fontWeight:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .bodyMedium
-                                                          .fontWeight,
-                                                  fontStyle:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .bodyMedium
-                                                          .fontStyle,
-                                                ),
-                                                fontSize: 10.0,
-                                                letterSpacing: 0.0,
-                                                fontWeight:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .fontWeight,
-                                                fontStyle:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .fontStyle,
+                                              SizedBox(width: 15.0),
+                                              Icon(
+                                                Icons.calendar_today_outlined,
+                                                color: Color(0xFF57636C),
+                                                size: 14.0,
                                               ),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsetsDirectional.fromSTEB(
-                                            5.0, 13.0, 0.0, 0.0),
-                                        child: Icon(
-                                          Icons.favorite_border,
-                                          color: Color(0xFFA5A5A5),
-                                          size: 15.0,
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsetsDirectional.fromSTEB(
-                                            3.0, 13.0, 0.0, 0.0),
-                                        child: Text(
-                                          '156',
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyMedium
-                                              .override(
-                                                font: GoogleFonts.inter(
-                                                  fontWeight:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .bodyMedium
-                                                          .fontWeight,
-                                                  fontStyle:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .bodyMedium
-                                                          .fontStyle,
-                                                ),
-                                                fontSize: 10.0,
-                                                letterSpacing: 0.0,
-                                                fontWeight:
+                                              SizedBox(width: 5.0),
+                                              Text(
+                                                _model.notice!.formattedDate,
+                                                style:
                                                     FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .fontWeight,
-                                                fontStyle:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .fontStyle,
+                                                        .bodySmall
+                                                        .override(
+                                                          color:
+                                                              Color(0xFF57636C),
+                                                          fontSize: 12.0,
+                                                          letterSpacing: 0.0,
+                                                        ),
                                               ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              Column(
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: [
-                                      Flexible(
-                                        child: Padding(
-                                          padding:
-                                              EdgeInsetsDirectional.fromSTEB(
-                                                  20.0, 20.0, 5.0, 0.0),
-                                          child: Text(
-                                            '12월 20일부터 1월 말까지 겨울 방학 기간 동안 출입시간이 변경됩니다',
-                                            style: FlutterFlowTheme.of(context)
-                                                .bodyMedium
-                                                .override(
-                                                  font: GoogleFonts.inter(
-                                                    fontWeight:
-                                                        FlutterFlowTheme.of(
-                                                                context)
-                                                            .bodyMedium
-                                                            .fontWeight,
-                                                    fontStyle:
-                                                        FlutterFlowTheme.of(
-                                                                context)
-                                                            .bodyMedium
-                                                            .fontStyle,
-                                                  ),
-                                                  fontSize: 12.0,
-                                                  letterSpacing: 0.0,
-                                                  fontWeight:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .bodyMedium
-                                                          .fontWeight,
-                                                  fontStyle:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .bodyMedium
-                                                          .fontStyle,
-                                                ),
+                                            ],
                                           ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              Column(
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsetsDirectional.fromSTEB(
-                                            20.0, 35.0, 0.0, 0.0),
-                                        child: Text(
-                                          '- 평일: 06:00 ~ 23:00',
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyMedium
-                                              .override(
-                                                font: GoogleFonts.inter(
-                                                  fontWeight:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .bodyMedium
-                                                          .fontWeight,
-                                                  fontStyle:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .bodyMedium
-                                                          .fontStyle,
-                                                ),
-                                                fontSize: 12.0,
-                                                letterSpacing: 0.0,
-                                                fontWeight:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .fontWeight,
-                                                fontStyle:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .fontStyle,
-                                              ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              Column(
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsetsDirectional.fromSTEB(
-                                            20.0, 5.0, 0.0, 0.0),
-                                        child: Text(
-                                          '- 주말: 07:00 ~ 22:00',
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyMedium
-                                              .override(
-                                                font: GoogleFonts.inter(
-                                                  fontWeight:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .bodyMedium
-                                                          .fontWeight,
-                                                  fontStyle:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .bodyMedium
-                                                          .fontStyle,
-                                                ),
-                                                fontSize: 12.0,
-                                                letterSpacing: 0.0,
-                                                fontWeight:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .fontWeight,
-                                                fontStyle:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .fontStyle,
-                                              ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              Column(
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsetsDirectional.fromSTEB(
-                                        0.0, 15.0, 0.0, 0.0),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.max,
-                                      children: [
-                                        Flexible(
-                                          child: Padding(
+                                          SizedBox(height: 20.0),
+                                          // 내용
+                                          Container(
+                                            width: double.infinity,
                                             padding:
                                                 EdgeInsetsDirectional.fromSTEB(
-                                                    20.0, 0.0, 0.0, 0.0),
+                                                    15.0, 15.0, 15.0, 15.0),
+                                            decoration: BoxDecoration(
+                                              color: Color(0xFFF8F9FA),
+                                              borderRadius:
+                                                  BorderRadius.circular(8.0),
+                                            ),
                                             child: Text(
-                                              '출입 시간을 준수해주시기 바랍니다.',
+                                              _model.notice!.content,
                                               style:
                                                   FlutterFlowTheme.of(context)
                                                       .bodyMedium
                                                       .override(
-                                                        font: GoogleFonts.inter(
-                                                          fontWeight:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .bodyMedium
-                                                                  .fontWeight,
-                                                          fontStyle:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .bodyMedium
-                                                                  .fontStyle,
-                                                        ),
-                                                        fontSize: 12.0,
+                                                        fontSize: 14.0,
                                                         letterSpacing: 0.0,
-                                                        fontWeight:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .bodyMedium
-                                                                .fontWeight,
-                                                        fontStyle:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .bodyMedium
-                                                                .fontStyle,
                                                       ),
                                             ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ],
-                              ),
-                              Column(
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  SizedBox(
-                                    width: 300.0,
-                                    child: Divider(
-                                      thickness: 2.0,
-                                      color: FlutterFlowTheme.of(context)
-                                          .alternate,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Column(
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsetsDirectional.fromSTEB(
-                                        0.0, 0.0, 0.0, 10.0),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.max,
-                                      children: [
-                                        Padding(
-                                          padding:
-                                              EdgeInsetsDirectional.fromSTEB(
-                                                  20.0, 5.0, 0.0, 0.0),
-                                          child: Container(
-                                            width: 292.2,
-                                            height: 40.0,
-                                            decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              borderRadius:
-                                                  BorderRadius.circular(8.0),
-                                              shape: BoxShape.rectangle,
-                                              border: Border.all(
-                                                color: Color(0xFFDFDEDE),
-                                              ),
-                                            ),
-                                            child: Column(
-                                              mainAxisSize: MainAxisSize.max,
-                                              children: [
-                                                Row(
-                                                  mainAxisSize:
-                                                      MainAxisSize.max,
-                                                  children: [
-                                                    Padding(
-                                                      padding:
-                                                          EdgeInsetsDirectional
-                                                              .fromSTEB(
-                                                                  90.0,
-                                                                  10.0,
-                                                                  0.0,
-                                                                  0.0),
-                                                      child: Icon(
-                                                        Icons
-                                                            .favorite_border_sharp,
-                                                        color:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .primaryText,
-                                                        size: 20.0,
-                                                      ),
-                                                    ),
-                                                    Padding(
-                                                      padding:
-                                                          EdgeInsetsDirectional
-                                                              .fromSTEB(
-                                                                  5.0,
-                                                                  10.0,
-                                                                  0.0,
-                                                                  0.0),
-                                                      child: Text(
-                                                        '좋아요(23)',
-                                                        style:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .bodyMedium
-                                                                .override(
-                                                                  font:
-                                                                      GoogleFonts
-                                                                          .inter(
-                                                                    fontWeight: FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .bodyMedium
-                                                                        .fontWeight,
-                                                                    fontStyle: FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .bodyMedium
-                                                                        .fontStyle,
-                                                                  ),
-                                                                  letterSpacing:
-                                                                      0.0,
-                                                                  fontWeight: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .bodyMedium
-                                                                      .fontWeight,
-                                                                  fontStyle: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .bodyMedium
-                                                                      .fontStyle,
-                                                                ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
               ),
             ],
           ),
