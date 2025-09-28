@@ -58,8 +58,8 @@ class _ProfileMainWidgetState extends State<ProfileMainWidget> {
           top: true,
           child: ListView(
             padding: EdgeInsets.zero,
-            primary: false,
-            shrinkWrap: true,
+            // 오버플로우 방지를 위해 ListView 속성 조정
+            primary: true,
             scrollDirection: Axis.vertical,
             children: [
               Column(
@@ -70,7 +70,7 @@ class _ProfileMainWidgetState extends State<ProfileMainWidget> {
                     children: [
                       Padding(
                         padding:
-                            EdgeInsetsDirectional.fromSTEB(20.0, 0.0, 0.0, 0.0),
+                        EdgeInsetsDirectional.fromSTEB(20.0, 0.0, 0.0, 0.0),
                         child: FlutterFlowIconButton(
                           borderRadius: 9.0,
                           buttonSize: 40.0,
@@ -80,7 +80,8 @@ class _ProfileMainWidgetState extends State<ProfileMainWidget> {
                             size: 26.0,
                           ),
                           onPressed: () async {
-                            context.pushNamed(MenuMainWidget.routeName);
+                            // ⚠️ 수정: 라우팅 오류 해결
+                            context.pushNamed('menuMain');
                           },
                         ),
                       ),
@@ -132,18 +133,18 @@ class _ProfileMainWidgetState extends State<ProfileMainWidget> {
                                 style: FlutterFlowTheme.of(context)
                                     .bodyMedium
                                     .override(
-                                      font: GoogleFonts.inter(
-                                        fontWeight: FontWeight.bold,
-                                        fontStyle: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .fontStyle,
-                                      ),
-                                      letterSpacing: 0.0,
-                                      fontWeight: FontWeight.bold,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .bodyMedium
-                                          .fontStyle,
-                                    ),
+                                  font: GoogleFonts.inter(
+                                    fontWeight: FontWeight.bold,
+                                    fontStyle: FlutterFlowTheme.of(context)
+                                        .bodyMedium
+                                        .fontStyle,
+                                  ),
+                                  letterSpacing: 0.0,
+                                  fontWeight: FontWeight.bold,
+                                  fontStyle: FlutterFlowTheme.of(context)
+                                      .bodyMedium
+                                      .fontStyle,
+                                ),
                               ),
                             ),
                             Padding(
@@ -155,23 +156,23 @@ class _ProfileMainWidgetState extends State<ProfileMainWidget> {
                                 style: FlutterFlowTheme.of(context)
                                     .bodyMedium
                                     .override(
-                                      font: GoogleFonts.inter(
-                                        fontWeight: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .fontWeight,
-                                        fontStyle: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .fontStyle,
-                                      ),
-                                      fontSize: 10.0,
-                                      letterSpacing: 0.0,
-                                      fontWeight: FlutterFlowTheme.of(context)
-                                          .bodyMedium
-                                          .fontWeight,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .bodyMedium
-                                          .fontStyle,
-                                    ),
+                                  font: GoogleFonts.inter(
+                                    fontWeight: FlutterFlowTheme.of(context)
+                                        .bodyMedium
+                                        .fontWeight,
+                                    fontStyle: FlutterFlowTheme.of(context)
+                                        .bodyMedium
+                                        .fontStyle,
+                                  ),
+                                  fontSize: 10.0,
+                                  letterSpacing: 0.0,
+                                  fontWeight: FlutterFlowTheme.of(context)
+                                      .bodyMedium
+                                      .fontWeight,
+                                  fontStyle: FlutterFlowTheme.of(context)
+                                      .bodyMedium
+                                      .fontStyle,
+                                ),
                               ),
                             ),
                           ],
@@ -203,7 +204,8 @@ class _ProfileMainWidgetState extends State<ProfileMainWidget> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Container(
-                            width: 405.3,
+                            // 🟢 수정: 오버플로우 해결 (405.3 -> 90%)
+                            width: MediaQuery.sizeOf(context).width * 0.9,
                             height: 35.29,
                             decoration: BoxDecoration(
                               color: Color(0x1BBAB9B9),
@@ -214,12 +216,13 @@ class _ProfileMainWidgetState extends State<ProfileMainWidget> {
                       ),
                       Padding(
                         padding:
-                            EdgeInsetsDirectional.fromSTEB(0.0, 20.0, 0.0, 0.0),
+                        EdgeInsetsDirectional.fromSTEB(0.0, 20.0, 0.0, 0.0),
                         child: Column(
                           mainAxisSize: MainAxisSize.max,
                           children: [
                             Container(
-                              width: 344.2,
+                              // 🟢 수정: 오버플로우 해결 (344.2 -> 90%)
+                              width: MediaQuery.sizeOf(context).width * 0.9,
                               height: 162.0,
                               decoration: BoxDecoration(
                                 color: Color(0x1BBAB9B9),
@@ -239,22 +242,22 @@ class _ProfileMainWidgetState extends State<ProfileMainWidget> {
                                           style: FlutterFlowTheme.of(context)
                                               .bodyMedium
                                               .override(
-                                                font: GoogleFonts.inter(
-                                                  fontWeight: FontWeight.w900,
-                                                  fontStyle:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .bodyMedium
-                                                          .fontStyle,
-                                                ),
-                                                fontSize: 16.0,
-                                                letterSpacing: 0.0,
-                                                fontWeight: FontWeight.w900,
-                                                fontStyle:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .fontStyle,
-                                              ),
+                                            font: GoogleFonts.inter(
+                                              fontWeight: FontWeight.w900,
+                                              fontStyle:
+                                              FlutterFlowTheme.of(
+                                                  context)
+                                                  .bodyMedium
+                                                  .fontStyle,
+                                            ),
+                                            fontSize: 16.0,
+                                            letterSpacing: 0.0,
+                                            fontWeight: FontWeight.w900,
+                                            fontStyle:
+                                            FlutterFlowTheme.of(context)
+                                                .bodyMedium
+                                                .fontStyle,
+                                          ),
                                         ),
                                       ),
                                     ],
@@ -267,43 +270,43 @@ class _ProfileMainWidgetState extends State<ProfileMainWidget> {
                                       children: [
                                         Padding(
                                           padding:
-                                              EdgeInsetsDirectional.fromSTEB(
-                                                  30.0, 0.0, 0.0, 0.0),
+                                          EdgeInsetsDirectional.fromSTEB(
+                                              30.0, 0.0, 0.0, 0.0),
                                           child: Text(
                                             '최근 활동',
                                             style: FlutterFlowTheme.of(context)
                                                 .bodyMedium
                                                 .override(
-                                                  font: GoogleFonts.inter(
-                                                    fontWeight:
-                                                        FlutterFlowTheme.of(
-                                                                context)
-                                                            .bodyMedium
-                                                            .fontWeight,
-                                                    fontStyle:
-                                                        FlutterFlowTheme.of(
-                                                                context)
-                                                            .bodyMedium
-                                                            .fontStyle,
-                                                  ),
-                                                  letterSpacing: 0.0,
-                                                  fontWeight:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .bodyMedium
-                                                          .fontWeight,
-                                                  fontStyle:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .bodyMedium
-                                                          .fontStyle,
-                                                ),
+                                              font: GoogleFonts.inter(
+                                                fontWeight:
+                                                FlutterFlowTheme.of(
+                                                    context)
+                                                    .bodyMedium
+                                                    .fontWeight,
+                                                fontStyle:
+                                                FlutterFlowTheme.of(
+                                                    context)
+                                                    .bodyMedium
+                                                    .fontStyle,
+                                              ),
+                                              letterSpacing: 0.0,
+                                              fontWeight:
+                                              FlutterFlowTheme.of(
+                                                  context)
+                                                  .bodyMedium
+                                                  .fontWeight,
+                                              fontStyle:
+                                              FlutterFlowTheme.of(
+                                                  context)
+                                                  .bodyMedium
+                                                  .fontStyle,
+                                            ),
                                           ),
                                         ),
                                         Padding(
                                           padding:
-                                              EdgeInsetsDirectional.fromSTEB(
-                                                  210.0, 0.0, 0.0, 0.0),
+                                          EdgeInsetsDirectional.fromSTEB(
+                                              210.0, 0.0, 0.0, 0.0),
                                           child: FlutterFlowIconButton(
                                             borderRadius: 8.0,
                                             buttonSize: 40.0,
@@ -328,43 +331,43 @@ class _ProfileMainWidgetState extends State<ProfileMainWidget> {
                                       children: [
                                         Padding(
                                           padding:
-                                              EdgeInsetsDirectional.fromSTEB(
-                                                  30.0, 0.0, 0.0, 0.0),
+                                          EdgeInsetsDirectional.fromSTEB(
+                                              30.0, 0.0, 0.0, 0.0),
                                           child: Text(
                                             '이용약관',
                                             style: FlutterFlowTheme.of(context)
                                                 .bodyMedium
                                                 .override(
-                                                  font: GoogleFonts.inter(
-                                                    fontWeight:
-                                                        FlutterFlowTheme.of(
-                                                                context)
-                                                            .bodyMedium
-                                                            .fontWeight,
-                                                    fontStyle:
-                                                        FlutterFlowTheme.of(
-                                                                context)
-                                                            .bodyMedium
-                                                            .fontStyle,
-                                                  ),
-                                                  letterSpacing: 0.0,
-                                                  fontWeight:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .bodyMedium
-                                                          .fontWeight,
-                                                  fontStyle:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .bodyMedium
-                                                          .fontStyle,
-                                                ),
+                                              font: GoogleFonts.inter(
+                                                fontWeight:
+                                                FlutterFlowTheme.of(
+                                                    context)
+                                                    .bodyMedium
+                                                    .fontWeight,
+                                                fontStyle:
+                                                FlutterFlowTheme.of(
+                                                    context)
+                                                    .bodyMedium
+                                                    .fontStyle,
+                                              ),
+                                              letterSpacing: 0.0,
+                                              fontWeight:
+                                              FlutterFlowTheme.of(
+                                                  context)
+                                                  .bodyMedium
+                                                  .fontWeight,
+                                              fontStyle:
+                                              FlutterFlowTheme.of(
+                                                  context)
+                                                  .bodyMedium
+                                                  .fontStyle,
+                                            ),
                                           ),
                                         ),
                                         Padding(
                                           padding:
-                                              EdgeInsetsDirectional.fromSTEB(
-                                                  215.0, 0.0, 0.0, 0.0),
+                                          EdgeInsetsDirectional.fromSTEB(
+                                              215.0, 0.0, 0.0, 0.0),
                                           child: FlutterFlowIconButton(
                                             borderRadius: 8.0,
                                             buttonSize: 40.0,
@@ -391,7 +394,7 @@ class _ProfileMainWidgetState extends State<ProfileMainWidget> {
                   ),
                   Padding(
                     padding:
-                        EdgeInsetsDirectional.fromSTEB(0.0, 20.0, 0.0, 0.0),
+                    EdgeInsetsDirectional.fromSTEB(0.0, 20.0, 0.0, 0.0),
                     child: Column(
                       mainAxisSize: MainAxisSize.max,
                       children: [
@@ -403,7 +406,8 @@ class _ProfileMainWidgetState extends State<ProfileMainWidget> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               Container(
-                                width: 344.2,
+                                // 🟢 수정: 오버플로우 해결 (344.2 -> 90%)
+                                width: MediaQuery.sizeOf(context).width * 0.9,
                                 height: 239.81,
                                 decoration: BoxDecoration(
                                   color: Color(0x1BBAB9B9),
@@ -415,40 +419,40 @@ class _ProfileMainWidgetState extends State<ProfileMainWidget> {
                                   child: Column(
                                     mainAxisSize: MainAxisSize.max,
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.center,
+                                    CrossAxisAlignment.center,
                                     children: [
                                       Row(
                                         mainAxisSize: MainAxisSize.max,
                                         children: [
                                           Padding(
                                             padding:
-                                                EdgeInsetsDirectional.fromSTEB(
-                                                    30.0, 20.0, 0.0, 0.0),
+                                            EdgeInsetsDirectional.fromSTEB(
+                                                30.0, 20.0, 0.0, 0.0),
                                             child: Text(
                                               '이용약관',
                                               style:
-                                                  FlutterFlowTheme.of(context)
+                                              FlutterFlowTheme.of(context)
+                                                  .bodyMedium
+                                                  .override(
+                                                font: GoogleFonts.inter(
+                                                  fontWeight:
+                                                  FontWeight.w900,
+                                                  fontStyle:
+                                                  FlutterFlowTheme.of(
+                                                      context)
                                                       .bodyMedium
-                                                      .override(
-                                                        font: GoogleFonts.inter(
-                                                          fontWeight:
-                                                              FontWeight.w900,
-                                                          fontStyle:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .bodyMedium
-                                                                  .fontStyle,
-                                                        ),
-                                                        fontSize: 16.0,
-                                                        letterSpacing: 0.0,
-                                                        fontWeight:
-                                                            FontWeight.w900,
-                                                        fontStyle:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .bodyMedium
-                                                                .fontStyle,
-                                                      ),
+                                                      .fontStyle,
+                                                ),
+                                                fontSize: 16.0,
+                                                letterSpacing: 0.0,
+                                                fontWeight:
+                                                FontWeight.w900,
+                                                fontStyle:
+                                                FlutterFlowTheme.of(
+                                                    context)
+                                                    .bodyMedium
+                                                    .fontStyle,
+                                              ),
                                             ),
                                           ),
                                         ],
@@ -462,75 +466,75 @@ class _ProfileMainWidgetState extends State<ProfileMainWidget> {
                                             Padding(
                                               padding: EdgeInsetsDirectional
                                                   .fromSTEB(
-                                                      30.0, 0.0, 0.0, 0.0),
+                                                  30.0, 0.0, 0.0, 0.0),
                                               child: Text(
                                                 '어플 버전',
                                                 style:
-                                                    FlutterFlowTheme.of(context)
+                                                FlutterFlowTheme.of(context)
+                                                    .bodyMedium
+                                                    .override(
+                                                  font:
+                                                  GoogleFonts.inter(
+                                                    fontWeight:
+                                                    FlutterFlowTheme.of(
+                                                        context)
                                                         .bodyMedium
-                                                        .override(
-                                                          font:
-                                                              GoogleFonts.inter(
-                                                            fontWeight:
-                                                                FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .bodyMedium
-                                                                    .fontWeight,
-                                                            fontStyle:
-                                                                FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .bodyMedium
-                                                                    .fontStyle,
-                                                          ),
-                                                          letterSpacing: 0.0,
-                                                          fontWeight:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .bodyMedium
-                                                                  .fontWeight,
-                                                          fontStyle:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .bodyMedium
-                                                                  .fontStyle,
-                                                        ),
+                                                        .fontWeight,
+                                                    fontStyle:
+                                                    FlutterFlowTheme.of(
+                                                        context)
+                                                        .bodyMedium
+                                                        .fontStyle,
+                                                  ),
+                                                  letterSpacing: 0.0,
+                                                  fontWeight:
+                                                  FlutterFlowTheme.of(
+                                                      context)
+                                                      .bodyMedium
+                                                      .fontWeight,
+                                                  fontStyle:
+                                                  FlutterFlowTheme.of(
+                                                      context)
+                                                      .bodyMedium
+                                                      .fontStyle,
+                                                ),
                                               ),
                                             ),
                                             Padding(
                                               padding: EdgeInsetsDirectional
                                                   .fromSTEB(
-                                                      180.0, 0.0, 0.0, 0.0),
+                                                  180.0, 0.0, 0.0, 0.0),
                                               child: Text(
                                                 '3.8.17',
                                                 style:
-                                                    FlutterFlowTheme.of(context)
+                                                FlutterFlowTheme.of(context)
+                                                    .bodyMedium
+                                                    .override(
+                                                  font:
+                                                  GoogleFonts.inter(
+                                                    fontWeight:
+                                                    FlutterFlowTheme.of(
+                                                        context)
                                                         .bodyMedium
-                                                        .override(
-                                                          font:
-                                                              GoogleFonts.inter(
-                                                            fontWeight:
-                                                                FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .bodyMedium
-                                                                    .fontWeight,
-                                                            fontStyle:
-                                                                FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .bodyMedium
-                                                                    .fontStyle,
-                                                          ),
-                                                          letterSpacing: 0.0,
-                                                          fontWeight:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .bodyMedium
-                                                                  .fontWeight,
-                                                          fontStyle:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .bodyMedium
-                                                                  .fontStyle,
-                                                        ),
+                                                        .fontWeight,
+                                                    fontStyle:
+                                                    FlutterFlowTheme.of(
+                                                        context)
+                                                        .bodyMedium
+                                                        .fontStyle,
+                                                  ),
+                                                  letterSpacing: 0.0,
+                                                  fontWeight:
+                                                  FlutterFlowTheme.of(
+                                                      context)
+                                                      .bodyMedium
+                                                      .fontWeight,
+                                                  fontStyle:
+                                                  FlutterFlowTheme.of(
+                                                      context)
+                                                      .bodyMedium
+                                                      .fontStyle,
+                                                ),
                                               ),
                                             ),
                                           ],
@@ -541,44 +545,44 @@ class _ProfileMainWidgetState extends State<ProfileMainWidget> {
                                         children: [
                                           Padding(
                                             padding:
-                                                EdgeInsetsDirectional.fromSTEB(
-                                                    30.0, 0.0, 0.0, 0.0),
+                                            EdgeInsetsDirectional.fromSTEB(
+                                                30.0, 0.0, 0.0, 0.0),
                                             child: Text(
                                               '서비스 약관',
                                               style:
-                                                  FlutterFlowTheme.of(context)
+                                              FlutterFlowTheme.of(context)
+                                                  .bodyMedium
+                                                  .override(
+                                                font: GoogleFonts.inter(
+                                                  fontWeight:
+                                                  FlutterFlowTheme.of(
+                                                      context)
                                                       .bodyMedium
-                                                      .override(
-                                                        font: GoogleFonts.inter(
-                                                          fontWeight:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .bodyMedium
-                                                                  .fontWeight,
-                                                          fontStyle:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .bodyMedium
-                                                                  .fontStyle,
-                                                        ),
-                                                        letterSpacing: 0.0,
-                                                        fontWeight:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .bodyMedium
-                                                                .fontWeight,
-                                                        fontStyle:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .bodyMedium
-                                                                .fontStyle,
-                                                      ),
+                                                      .fontWeight,
+                                                  fontStyle:
+                                                  FlutterFlowTheme.of(
+                                                      context)
+                                                      .bodyMedium
+                                                      .fontStyle,
+                                                ),
+                                                letterSpacing: 0.0,
+                                                fontWeight:
+                                                FlutterFlowTheme.of(
+                                                    context)
+                                                    .bodyMedium
+                                                    .fontWeight,
+                                                fontStyle:
+                                                FlutterFlowTheme.of(
+                                                    context)
+                                                    .bodyMedium
+                                                    .fontStyle,
+                                              ),
                                             ),
                                           ),
                                           Padding(
                                             padding:
-                                                EdgeInsetsDirectional.fromSTEB(
-                                                    170.0, 0.0, 0.0, 0.0),
+                                            EdgeInsetsDirectional.fromSTEB(
+                                                170.0, 0.0, 0.0, 0.0),
                                             child: FlutterFlowIconButton(
                                               borderRadius: 8.0,
                                               buttonSize: 40.0,
@@ -599,44 +603,44 @@ class _ProfileMainWidgetState extends State<ProfileMainWidget> {
                                         children: [
                                           Padding(
                                             padding:
-                                                EdgeInsetsDirectional.fromSTEB(
-                                                    30.0, 0.0, 0.0, 0.0),
+                                            EdgeInsetsDirectional.fromSTEB(
+                                                30.0, 0.0, 0.0, 0.0),
                                             child: Text(
                                               '개인 정보 보호 정책',
                                               style:
-                                                  FlutterFlowTheme.of(context)
+                                              FlutterFlowTheme.of(context)
+                                                  .bodyMedium
+                                                  .override(
+                                                font: GoogleFonts.inter(
+                                                  fontWeight:
+                                                  FlutterFlowTheme.of(
+                                                      context)
                                                       .bodyMedium
-                                                      .override(
-                                                        font: GoogleFonts.inter(
-                                                          fontWeight:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .bodyMedium
-                                                                  .fontWeight,
-                                                          fontStyle:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .bodyMedium
-                                                                  .fontStyle,
-                                                        ),
-                                                        letterSpacing: 0.0,
-                                                        fontWeight:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .bodyMedium
-                                                                .fontWeight,
-                                                        fontStyle:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .bodyMedium
-                                                                .fontStyle,
-                                                      ),
+                                                      .fontWeight,
+                                                  fontStyle:
+                                                  FlutterFlowTheme.of(
+                                                      context)
+                                                      .bodyMedium
+                                                      .fontStyle,
+                                                ),
+                                                letterSpacing: 0.0,
+                                                fontWeight:
+                                                FlutterFlowTheme.of(
+                                                    context)
+                                                    .bodyMedium
+                                                    .fontWeight,
+                                                fontStyle:
+                                                FlutterFlowTheme.of(
+                                                    context)
+                                                    .bodyMedium
+                                                    .fontStyle,
+                                              ),
                                             ),
                                           ),
                                           Padding(
                                             padding:
-                                                EdgeInsetsDirectional.fromSTEB(
-                                                    158.0, 0.0, 0.0, 0.0),
+                                            EdgeInsetsDirectional.fromSTEB(
+                                                158.0, 0.0, 0.0, 0.0),
                                             child: FlutterFlowIconButton(
                                               borderRadius: 8.0,
                                               buttonSize: 40.0,
@@ -657,44 +661,44 @@ class _ProfileMainWidgetState extends State<ProfileMainWidget> {
                                         children: [
                                           Padding(
                                             padding:
-                                                EdgeInsetsDirectional.fromSTEB(
-                                                    30.0, 0.0, 0.0, 0.0),
+                                            EdgeInsetsDirectional.fromSTEB(
+                                                30.0, 0.0, 0.0, 0.0),
                                             child: Text(
                                               '청소년 보호 정책',
                                               style:
-                                                  FlutterFlowTheme.of(context)
+                                              FlutterFlowTheme.of(context)
+                                                  .bodyMedium
+                                                  .override(
+                                                font: GoogleFonts.inter(
+                                                  fontWeight:
+                                                  FlutterFlowTheme.of(
+                                                      context)
                                                       .bodyMedium
-                                                      .override(
-                                                        font: GoogleFonts.inter(
-                                                          fontWeight:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .bodyMedium
-                                                                  .fontWeight,
-                                                          fontStyle:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .bodyMedium
-                                                                  .fontStyle,
-                                                        ),
-                                                        letterSpacing: 0.0,
-                                                        fontWeight:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .bodyMedium
-                                                                .fontWeight,
-                                                        fontStyle:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .bodyMedium
-                                                                .fontStyle,
-                                                      ),
+                                                      .fontWeight,
+                                                  fontStyle:
+                                                  FlutterFlowTheme.of(
+                                                      context)
+                                                      .bodyMedium
+                                                      .fontStyle,
+                                                ),
+                                                letterSpacing: 0.0,
+                                                fontWeight:
+                                                FlutterFlowTheme.of(
+                                                    context)
+                                                    .bodyMedium
+                                                    .fontWeight,
+                                                fontStyle:
+                                                FlutterFlowTheme.of(
+                                                    context)
+                                                    .bodyMedium
+                                                    .fontStyle,
+                                              ),
                                             ),
                                           ),
                                           Padding(
                                             padding:
-                                                EdgeInsetsDirectional.fromSTEB(
-                                                    170.0, 0.0, 0.0, 0.0),
+                                            EdgeInsetsDirectional.fromSTEB(
+                                                170.0, 0.0, 0.0, 0.0),
                                             child: FlutterFlowIconButton(
                                               borderRadius: 8.0,
                                               buttonSize: 40.0,
@@ -727,12 +731,13 @@ class _ProfileMainWidgetState extends State<ProfileMainWidget> {
                 children: [
                   Padding(
                     padding:
-                        EdgeInsetsDirectional.fromSTEB(20.0, 20.0, 0.0, 0.0),
+                    EdgeInsetsDirectional.fromSTEB(20.0, 20.0, 0.0, 0.0),
                     child: Row(
                       mainAxisSize: MainAxisSize.max,
                       children: [
                         Container(
-                          width: 344.2,
+                          // 🟢 수정: 오버플로우 해결 (344.2 -> 90%)
+                          width: MediaQuery.sizeOf(context).width * 0.9,
                           height: 52.0,
                           decoration: BoxDecoration(
                             color: FlutterFlowTheme.of(context)
@@ -754,23 +759,23 @@ class _ProfileMainWidgetState extends State<ProfileMainWidget> {
                               textStyle: FlutterFlowTheme.of(context)
                                   .titleSmall
                                   .override(
-                                    font: GoogleFonts.interTight(
-                                      fontWeight: FlutterFlowTheme.of(context)
-                                          .titleSmall
-                                          .fontWeight,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .titleSmall
-                                          .fontStyle,
-                                    ),
-                                    color: FlutterFlowTheme.of(context).info,
-                                    letterSpacing: 0.0,
-                                    fontWeight: FlutterFlowTheme.of(context)
-                                        .titleSmall
-                                        .fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .titleSmall
-                                        .fontStyle,
-                                  ),
+                                font: GoogleFonts.interTight(
+                                  fontWeight: FlutterFlowTheme.of(context)
+                                      .titleSmall
+                                      .fontWeight,
+                                  fontStyle: FlutterFlowTheme.of(context)
+                                      .titleSmall
+                                      .fontStyle,
+                                ),
+                                color: FlutterFlowTheme.of(context).info,
+                                letterSpacing: 0.0,
+                                fontWeight: FlutterFlowTheme.of(context)
+                                    .titleSmall
+                                    .fontWeight,
+                                fontStyle: FlutterFlowTheme.of(context)
+                                    .titleSmall
+                                    .fontStyle,
+                              ),
                               elevation: 0.0,
                               borderRadius: BorderRadius.circular(8.0),
                             ),
