@@ -46,16 +46,25 @@ class MassageDetailRoommateCopyModel
     User? user = _auth.currentUser;
     if (user != null) {
       currentUserId = user.uid;
+      print('🔔 현재 사용자 ID: $currentUserId');
       _getUserInfo();
     } else {
-      // 사용자가 로그인되지 않은 경우
-      print('Firebase 인증 사용자가 없음');
-      currentUserId = null;
-      currentUserName = null;
-      currentStudentId = null;
+      // 사용자가 로그인되지 않은 경우 기본값 설정
+      print('🔔 Firebase 인증 사용자가 없음 - 기본값 설정');
+      currentUserId = 'default_user';
+      currentUserName = '학생';
+      currentStudentId = '20230709';
 
-      // 빈 메시지 목록으로 시작
-      messages = [];
+      // 기본 메시지 목록으로 시작
+      messages = [
+        {
+          'text': '안녕하세요! 무엇을 도와드릴까요?',
+          'senderId': 'admin',
+          'senderName': '관리자',
+          'timestamp': DateTime.now(),
+          'isAdmin': true,
+        }
+      ];
     }
 
     // 채팅 스트림 초기화
@@ -64,22 +73,57 @@ class MassageDetailRoommateCopyModel
 
   void _getUserInfo() async {
     try {
+      print('🔔 사용자 정보 가져오기 시작: $currentUserId');
       DocumentSnapshot userDoc =
           await _firestore.collection('users').doc(currentUserId).get();
 
       if (userDoc.exists) {
         Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
-        currentUserName = userData['name'];
-        currentStudentId = userData['studentId'];
+        currentUserName = userData['name'] ?? '학생';
+        currentStudentId = userData['studentId'] ?? '20230709';
+        print('🔔 사용자 정보 로드 성공: $currentUserName ($currentStudentId)');
       } else {
         // 사용자 정보가 없는 경우 기본값 설정
+        print('🔔 사용자 문서가 없음 - 기본값 설정');
         currentUserName = '학생';
         currentStudentId = '20230709';
       }
+
+      // 기본 메시지 추가
+      if (messages.isEmpty) {
+        messages = [
+          {
+            'text': '안녕하세요! 무엇을 도와드릴까요?',
+            'senderId': 'admin',
+            'senderName': '관리자',
+            'timestamp': DateTime.now(),
+            'isAdmin': true,
+          }
+        ];
+      }
+
+      // 채팅 스트림 재초기화
+      _initializeChatStream();
     } catch (e) {
-      print('사용자 정보 가져오기 오류: $e');
+      print('🔔 사용자 정보 가져오기 오류: $e');
       currentUserName = '학생';
       currentStudentId = '20230709';
+
+      // 기본 메시지 추가
+      if (messages.isEmpty) {
+        messages = [
+          {
+            'text': '안녕하세요! 무엇을 도와드릴까요?',
+            'senderId': 'admin',
+            'senderName': '관리자',
+            'timestamp': DateTime.now(),
+            'isAdmin': true,
+          }
+        ];
+      }
+
+      // 채팅 스트림 재초기화
+      _initializeChatStream();
     }
   }
 
@@ -92,6 +136,10 @@ class MassageDetailRoommateCopyModel
   }
 
   void _initializeChatStream() {
+    print('🔔 채팅 스트림 초기화 시작');
+    print('🔔 selectedRole: $selectedRole');
+    print('🔔 currentStudentId: $currentStudentId');
+
     if (selectedRole != null && currentStudentId != null) {
       // 초기 로드 플래그 리셋
       _isInitialLoad = true;
@@ -99,6 +147,7 @@ class MassageDetailRoommateCopyModel
 
       // 학생별 채팅방 ID 생성
       String chatId = _getChatId();
+      print('🔔 채팅방 ID: $chatId');
 
       // 역할별 관리자 타입 매핑
       String adminType = getAdminType(selectedRole!);
@@ -109,11 +158,9 @@ class MassageDetailRoommateCopyModel
       // 현재 채팅방의 글로벌 리스너 일시정지 (중복 알림 방지)
       GlobalMessageListener().pauseChatListener(chatId);
 
-      // 간단한 알림 서비스 사용
-
       // 메시지 스트림 설정 - chats 컬렉션 사용
       try {
-        print('Firestore 연결 시도 중...');
+        print('🔔 Firestore 연결 시도 중...');
 
         chatStream = _firestore
             .collection('chats')
@@ -200,6 +247,21 @@ class MassageDetailRoommateCopyModel
     } else {
       print(
           '🔔 채팅 스트림 초기화 실패: selectedRole=$selectedRole, currentStudentId=$currentStudentId');
+      print('🔔 기본 메시지 모드로 전환');
+
+      // Firestore 스트림이 없을 때 기본 메시지 표시
+      if (messages.isEmpty) {
+        messages = [
+          {
+            'text': '안녕하세요! 무엇을 도와드릴까요?',
+            'senderId': 'admin',
+            'senderName': '관리자',
+            'timestamp': DateTime.now(),
+            'isAdmin': true,
+          }
+        ];
+      }
+
       chatStream = null;
     }
   }
@@ -249,9 +311,9 @@ class MassageDetailRoommateCopyModel
   void sendMessage() async {
     if (messageController?.text.trim().isEmpty ?? true) return;
 
-    print('메시지 전송 시작: ${messageController!.text.trim()}');
-    print('selectedRole: $selectedRole');
-    print('currentStudentId: $currentStudentId');
+    print('🔔 메시지 전송 시작: ${messageController!.text.trim()}');
+    print('🔔 selectedRole: $selectedRole');
+    print('🔔 currentStudentId: $currentStudentId');
 
     // 메시지 텍스트 저장
     String messageText = messageController!.text.trim();
@@ -259,15 +321,26 @@ class MassageDetailRoommateCopyModel
     // 입력 필드 초기화
     messageController!.clear();
 
+    // 즉시 로컬 메시지 추가 (사용자 경험 개선)
+    Map<String, dynamic> localMessage = {
+      'text': messageText,
+      'senderId': 'student',
+      'senderName': currentUserName ?? '학생',
+      'timestamp': DateTime.now(),
+      'isAdmin': false,
+    };
+    messages.add(localMessage);
+    print('🔔 로컬 메시지 추가: ${messages.length}개 메시지');
+
     try {
       String chatId = _getChatId();
-      print('채팅방 ID: $chatId');
+      print('🔔 채팅방 ID: $chatId');
 
       // 네트워크 연결 상태 확인
-      print('Firestore 연결 확인 중...');
+      print('🔔 Firestore 연결 확인 중...');
 
       // Firebase 인증 여부와 관계없이 Firestore에 메시지 저장
-      print('Firestore에 메시지 저장 중...');
+      print('🔔 Firestore에 메시지 저장 중...');
       await _firestore
           .collection('chats')
           .doc(chatId)
@@ -281,7 +354,7 @@ class MassageDetailRoommateCopyModel
       });
 
       // 채팅방 정보 업데이트 - 웹에서 목록에 표시되도록
-      print('채팅방 정보 업데이트 중...');
+      print('🔔 채팅방 정보 업데이트 중...');
       await _firestore.collection('chats').doc(chatId).set({
         'studentName': currentUserName ?? '학생',
         'studentId': currentStudentId ?? 'unknown',
@@ -294,42 +367,61 @@ class MassageDetailRoommateCopyModel
         'createdAt': FieldValue.serverTimestamp(),
       }, SetOptions(merge: true));
 
-      print('메시지 전송 성공: $messageText');
-
-      // 자신이 보낸 메시지는 알림 제거 (주석 처리)
-      // _sendNewMessageNotification(messageText);
+      print('🔔 메시지 전송 성공: $messageText');
 
       // 챗봇인 경우 자동 응답
       if (selectedRole == 'chatbot') {
         _sendChatbotResponse(messageText);
       }
     } catch (e) {
-      print('메시지 전송 오류: $e');
+      print('🔔 메시지 전송 오류: $e');
 
       // 네트워크 오류인지 확인
       if (e.toString().contains('EAI_NODATA') ||
           e.toString().contains('network') ||
           e.toString().contains('connection')) {
-        print('네트워크 연결 오류로 인한 메시지 전송 실패');
+        print('🔔 네트워크 연결 오류로 인한 메시지 전송 실패');
         // 사용자에게 네트워크 오류 알림
         // TODO: 사용자에게 네트워크 오류 메시지 표시
       }
 
-      // 오류 발생 시 임시 메시지 추가
-      messages.add({
-        'text': messageText,
-        'senderId': 'student',
-        'senderName': currentUserName ?? '학생',
-        'timestamp': DateTime.now(),
-        'isAdmin': false,
-      });
-      print('오류로 인한 임시 메시지 추가 완료: ${messages.length}개 메시지');
+      // 오류 발생 시에도 로컬 메시지는 유지 (이미 추가됨)
+      print('🔔 오류로 인한 로컬 메시지 유지: ${messages.length}개 메시지');
 
       // 5초 후 재시도
       Future.delayed(Duration(seconds: 5), () {
-        print('메시지 전송 재시도 중...');
-        sendMessage();
+        print('🔔 메시지 전송 재시도 중...');
+        // 재시도 시에는 로컬 메시지 중복 추가 방지
+        if (messages.isNotEmpty &&
+            messages.last['text'] == messageText &&
+            messages.last['senderId'] == 'student') {
+          // 이미 로컬에 추가된 메시지가 있으므로 Firestore만 재시도
+          _retryFirestoreMessage(messageText);
+        } else {
+          sendMessage();
+        }
       });
+    }
+  }
+
+  // Firestore 메시지 재시도 전용 메서드
+  void _retryFirestoreMessage(String messageText) async {
+    try {
+      String chatId = _getChatId();
+      await _firestore
+          .collection('chats')
+          .doc(chatId)
+          .collection('messages')
+          .add({
+        'text': messageText,
+        'senderId': 'student',
+        'senderName': currentUserName ?? '학생',
+        'timestamp': FieldValue.serverTimestamp(),
+        'isAdmin': false,
+      });
+      print('🔔 Firestore 메시지 재시도 성공: $messageText');
+    } catch (e) {
+      print('🔔 Firestore 메시지 재시도 실패: $e');
     }
   }
 

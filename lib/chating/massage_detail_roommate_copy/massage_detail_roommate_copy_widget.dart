@@ -265,49 +265,24 @@ class _MassageDetailRoommateCopyWidgetState
 
   Widget _buildChatMessages() {
     // 디버깅 정보 출력
-    print('채팅 메시지 빌드 - chatStream: ${_model.chatStream != null}');
-    print('selectedRole: ${_model.selectedRole}');
-    print('currentStudentId: ${_model.currentStudentId}');
+    print('🔔 채팅 메시지 빌드 - chatStream: ${_model.chatStream != null}');
+    print('🔔 selectedRole: ${_model.selectedRole}');
+    print('🔔 currentStudentId: ${_model.currentStudentId}');
+    print('🔔 기본 메시지 개수: ${_model.messages.length}');
 
     // Firestore 스트림이 있는 경우 실시간 메시지 표시
     if (_model.chatStream != null) {
       return StreamBuilder<QuerySnapshot>(
         stream: _model.chatStream,
         builder: (context, snapshot) {
-          print('StreamBuilder 상태: ${snapshot.connectionState}');
-          print('StreamBuilder 데이터: ${snapshot.hasData}');
-          print('StreamBuilder 오류: ${snapshot.hasError}');
+          print('🔔 StreamBuilder 상태: ${snapshot.connectionState}');
+          print('🔔 StreamBuilder 데이터: ${snapshot.hasData}');
+          print('🔔 StreamBuilder 오류: ${snapshot.hasError}');
 
           if (snapshot.hasError) {
-            print('StreamBuilder 오류: ${snapshot.error}');
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.error, size: 48, color: Colors.red),
-                  SizedBox(height: 16),
-                  Text(
-                    '채팅을 불러오는데 실패했습니다.',
-                    style: FlutterFlowTheme.of(context).bodyMedium,
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    '오류: ${snapshot.error}',
-                    style: FlutterFlowTheme.of(context).bodySmall,
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        // UI 새로고침
-                      });
-                    },
-                    child: Text('다시 시도'),
-                  ),
-                ],
-              ),
-            );
+            print('🔔 StreamBuilder 오류: ${snapshot.error}');
+            // 오류 발생 시 기본 메시지 표시
+            return _buildDefaultMessages();
           }
 
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -325,10 +300,10 @@ class _MassageDetailRoommateCopyWidgetState
 
           List<Map<String, dynamic>> messages = [];
           if (snapshot.hasData && snapshot.data != null) {
-            print('Firestore에서 ${snapshot.data!.docs.length}개의 메시지 수신');
+            print('🔔 Firestore에서 ${snapshot.data!.docs.length}개의 메시지 수신');
             for (var doc in snapshot.data!.docs) {
               Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-              print('메시지 데이터: $data');
+              print('🔔 메시지 데이터: $data');
 
               // timestamp 처리
               DateTime? timestamp;
@@ -353,7 +328,7 @@ class _MassageDetailRoommateCopyWidgetState
 
           // 메시지가 없는 경우 기본 메시지 표시
           if (messages.isEmpty) {
-            print('Firestore 메시지가 없어 기본 메시지 사용');
+            print('🔔 Firestore 메시지가 없어 기본 메시지 사용');
             messages = _model.messages;
           }
 
@@ -403,16 +378,36 @@ class _MassageDetailRoommateCopyWidgetState
     }
 
     // Firestore 스트림이 없는 경우 기본 메시지 표시
-    print('Firestore 스트림이 없어 기본 메시지 사용');
+    print('🔔 Firestore 스트림이 없어 기본 메시지 사용');
+    return _buildDefaultMessages();
+  }
+
+  Widget _buildDefaultMessages() {
+    print('🔔 기본 메시지 빌드 - 메시지 개수: ${_model.messages.length}');
+
+    // 기본 메시지가 없으면 안내 메시지 추가
+    List<Map<String, dynamic>> displayMessages = List.from(_model.messages);
+    if (displayMessages.isEmpty) {
+      displayMessages = [
+        {
+          'text': '안녕하세요! 무엇을 도와드릴까요?',
+          'senderId': 'admin',
+          'senderName': '관리자',
+          'timestamp': DateTime.now(),
+          'isAdmin': true,
+        }
+      ];
+    }
+
     return ListView.builder(
       controller: _scrollController,
       padding: EdgeInsets.symmetric(horizontal: 16.0),
-      itemCount: _model.messages.length,
+      itemCount: displayMessages.length,
       reverse: true, // 맨 밑 대화창이 보이도록 reverse 사용
       itemBuilder: (context, index) {
         // reverse가 true이므로 인덱스를 뒤집어서 처리
         Map<String, dynamic> messageData =
-            _model.messages[_model.messages.length - 1 - index];
+            displayMessages[displayMessages.length - 1 - index];
         bool isMyMessage = messageData['senderId'] == 'student';
 
         return _buildMessageBubble(messageData, isMyMessage);
