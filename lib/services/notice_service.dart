@@ -43,7 +43,8 @@ class NoticeService {
 
       print('✅ 공지사항 목록 변환 완료: ${notices.length}개');
       for (int i = 0; i < notices.length; i++) {
-        print('✅ 공지사항 $i: ${notices[i].title} - ${notices[i].createdAt}');
+        print(
+            '✅ 공지사항 $i: ${notices[i].title} - ${notices[i].formattedDateTime}');
       }
       return notices;
     } catch (e) {
@@ -150,6 +151,20 @@ class NoticeService {
       print('❌ 오류 타입: ${e.runtimeType}');
       print('❌ 스택 트레이스: ${StackTrace.current}');
       throw Exception('공지사항 작성 중 오류가 발생했습니다: $e');
+    }
+  }
+
+  // 공지사항 조회수 증가
+  Future<void> incrementViewCount(String noticeId) async {
+    try {
+      await _firestore.collection('notices').doc(noticeId).update({
+        'viewCount': FieldValue.increment(1),
+        'updatedAt': Timestamp.now(),
+      });
+      print('✅ 공지사항 조회수 증가 완료: $noticeId');
+    } catch (e) {
+      print('❌ 공지사항 조회수 증가 오류: $e');
+      throw Exception('조회수 증가 중 오류가 발생했습니다: $e');
     }
   }
 

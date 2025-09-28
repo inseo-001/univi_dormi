@@ -12,21 +12,7 @@ class NoticeBigModel extends FlutterFlowModel<NoticeBigWidget> {
 
   @override
   void initState(BuildContext context) {
-    _loadNotice();
-  }
-
-  Future<void> _loadNotice() async {
-    try {
-      isLoading = true;
-      final notices = await noticeService.getNotices(limit: 1);
-      if (notices.isNotEmpty) {
-        notice = notices.first;
-      }
-      isLoading = false;
-    } catch (e) {
-      print('공지사항 상세 로딩 오류: $e');
-      isLoading = false;
-    }
+    // initState에서는 아무것도 하지 않음
   }
 
   @override

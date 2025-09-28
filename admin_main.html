@@ -656,39 +656,18 @@
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td style="cursor:pointer;color:#1976d2;text-decoration:underline;" onclick="showNoticeDetail('2024년 기숙사 입사 안내', '관리자', '2024-01-15', '기숙사 입사 관련 안내사항입니다.')">2024년 기숙사 입사 안내</td>
-                  <td>관리자</td>
-                  <td>2024-01-15</td>
-                  <td>156</td>
-                  <td>
-                    <button onclick="editNotice(1)" style="padding:4px 8px;font-size:0.9em;border:none;border-radius:4px;background:#4d7bbd;color:#fff;cursor:pointer;margin-right:4px;">수정</button>
-                    <button onclick="deleteNotice(1)" style="padding:4px 8px;font-size:0.9em;border:none;border-radius:4px;background:#d32f2f;color:#fff;cursor:pointer;">삭제</button>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="cursor:pointer;color:#1976d2;text-decoration:underline;" onclick="showNoticeDetail('기숙사 규정 변경 안내', '관리자', '2024-01-10', '기숙사 규정이 변경되었습니다.')">기숙사 규정 변경 안내</td>
-                  <td>관리자</td>
-                  <td>2024-01-10</td>
-                  <td>89</td>
-                  <td>
-                    <button onclick="editNotice(2)" style="padding:4px 8px;font-size:0.9em;border:none;border-radius:4px;background:#4d7bbd;color:#fff;cursor:pointer;margin-right:4px;">수정</button>
-                    <button onclick="deleteNotice(2)" style="padding:4px 8px;font-size:0.9em;border:none;border-radius:4px;background:#d32f2f;color:#fff;cursor:pointer;">삭제</button>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="cursor:pointer;color:#1976d2;text-decoration:underline;" onclick="showNoticeDetail('외박 신청 절차 안내', '관리자', '2024-01-05', '외박 신청 절차에 대한 안내입니다.')">외박 신청 절차 안내</td>
-                  <td>관리자</td>
-                  <td>2024-01-05</td>
-                  <td>234</td>
-                  <td>
-                    <button onclick="editNotice(3)" style="padding:4px 8px;font-size:0.9em;border:none;border-radius:4px;background:#4d7bbd;color:#fff;cursor:pointer;margin-right:4px;">수정</button>
-                    <button onclick="deleteNotice(3)" style="padding:4px 8px;font-size:0.9em;border:none;border-radius:4px;background:#d32f2f;color:#fff;cursor:pointer;">삭제</button>
+                <!-- Firebase에서 공지사항 데이터를 동적으로 로드합니다 -->
+                <tr id="loading-row">
+                  <td colspan="5" style="text-align:center;padding:20px;color:#666;">
+                    <div style="display:flex;align-items:center;justify-content:center;gap:10px;">
+                      <div style="width:20px;height:20px;border:2px solid #ddd;border-top:2px solid #4d7bbd;border-radius:50%;animation:spin 1s linear infinite;"></div>
+                      공지사항을 불러오는 중...
+                    </div>
                   </td>
                 </tr>
               </tbody>
             </table>
-            <div style="padding:10px 18px 0 18px;color:#888;font-size:0.97em;">1-3 of 3 &nbsp;&nbsp; Rows per page: 10 <span style="font-size:1.2em;vertical-align:middle;">◀️ ▶️</span></div>
+            <div id="notice-pagination" style="padding:10px 18px 0 18px;color:#888;font-size:0.97em;">1-0 of 0 &nbsp;&nbsp; Rows per page: 10 <span style="font-size:1.2em;vertical-align:middle;">◀️ ▶️</span></div>
           </div>
         </div>
       </div>
@@ -1494,6 +1473,9 @@ document.getElementById('dashboard-view').style.display = 'none';
           document.getElementById('dorm-out-view').style.display = 'none';
           document.getElementById('dorm-in-view').style.display = 'none';
           document.getElementById('message-view').style.display = 'none';
+          
+          // Firebase에서 공지사항 목록 로드
+          loadNoticesFromFirebase();
         };
       }
       
@@ -3443,6 +3425,93 @@ document.getElementById('dashboard-view').style.display = 'none';
     // 공지사항 관련 함수들
     var noticeCounter = 4; // 다음 공지사항 번호
     
+    // Firebase에서 공지사항 목록 로드
+    function loadNoticesFromFirebase() {
+      console.log('📡 Firebase에서 공지사항 목록 로드 시작...');
+      
+      if (!db) {
+        console.error('Firebase Firestore가 초기화되지 않았습니다.');
+        return;
+      }
+      
+      const tbody = document.querySelector('#notice-table tbody');
+      if (!tbody) {
+        console.error('공지사항 테이블 본문을 찾을 수 없습니다.');
+        return;
+      }
+      
+      // 로딩 표시
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:20px;color:#666;">공지사항을 불러오는 중...</td></tr>';
+      
+      db.collection('notices')
+        .orderBy('createdAt', 'desc')
+        .get()
+        .then((querySnapshot) => {
+          console.log('✅ 공지사항 데이터 로드 완료:', querySnapshot.docs.length, '개');
+          
+          tbody.innerHTML = '';
+          
+          if (querySnapshot.empty) {
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:20px;color:#666;">등록된 공지사항이 없습니다.</td></tr>';
+            return;
+          }
+          
+          querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            const row = document.createElement('tr');
+            
+            // 날짜 포맷팅 (한국 시간대 적용)
+            const createdAt = data.createdAt ? data.createdAt.toDate() : new Date();
+            // Firebase에서 가져온 시간을 그대로 사용 (이미 로컬 시간)
+            const dateStr = createdAt.toISOString().split('T')[0];
+            const timeStr = createdAt.toTimeString().split(' ')[0].substring(0, 5);
+            
+            row.innerHTML = `
+              <td style="cursor:pointer;color:#1976d2;text-decoration:underline;" onclick="showNoticeDetailWithViewCount('${doc.id}', '${data.title}', '${data.author}', '${dateStr}', '${data.content}')">${data.title}</td>
+              <td>${data.author}</td>
+              <td>${dateStr}</td>
+              <td>${data.viewCount || 0}</td>
+              <td>
+                <button onclick="editNotice('${doc.id}')" style="padding:4px 8px;font-size:0.9em;border:none;border-radius:4px;background:#4d7bbd;color:#fff;cursor:pointer;margin-right:4px;">수정</button>
+                <button onclick="deleteNotice('${doc.id}')" style="padding:4px 8px;font-size:0.9em;border:none;border-radius:4px;background:#d32f2f;color:#fff;cursor:pointer;">삭제</button>
+              </td>
+            `;
+            
+            tbody.appendChild(row);
+          });
+          
+          // 페이지네이션 업데이트
+          const paginationDiv = document.getElementById('notice-pagination');
+          if (paginationDiv) {
+            paginationDiv.innerHTML = `1-${querySnapshot.docs.length} of ${querySnapshot.docs.length} &nbsp;&nbsp; Rows per page: 10 <span style="font-size:1.2em;vertical-align:middle;">◀️ ▶️</span>`;
+          }
+        })
+        .catch((error) => {
+          console.error('❌ 공지사항 로드 오류:', error);
+          tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:20px;color:#d32f2f;">공지사항을 불러오는 중 오류가 발생했습니다.</td></tr>';
+        });
+    }
+    
+    // 공지사항 상세보기 (조회수 증가 포함)
+    function showNoticeDetailWithViewCount(noticeId, title, author, date, content) {
+      // 조회수 증가
+      if (db && noticeId) {
+        db.collection('notices').doc(noticeId).update({
+          viewCount: firebase.firestore.FieldValue.increment(1),
+          updatedAt: firebase.firestore.Timestamp.now()
+        }).then(() => {
+          console.log('✅ 조회수 증가 완료:', noticeId);
+          // 조회수 증가 후 목록 새로고침
+          loadNoticesFromFirebase();
+        }).catch((error) => {
+          console.error('❌ 조회수 증가 오류:', error);
+        });
+      }
+      
+      // 상세보기 표시
+      alert('공지사항 상세보기\n\n제목: ' + title + '\n작성자: ' + author + '\n작성일: ' + date + '\n\n내용:\n' + content);
+    }
+    
     // 공지사항 상세보기
     function showNoticeDetail(title, author, date, content) {
       alert('공지사항 상세보기\n\n제목: ' + title + '\n작성자: ' + author + '\n작성일: ' + date + '\n\n내용:\n' + content);
@@ -3491,26 +3560,49 @@ document.getElementById('dashboard-view').style.display = 'none';
         return;
       }
       
-      // 새로운 행 추가
-      var tbody = document.querySelector('#notice-table tbody');
-      var newRow = document.createElement('tr');
+      if (!db) {
+        console.error('Firebase Firestore가 초기화되지 않았습니다.');
+        alert('데이터베이스 연결에 문제가 있습니다.');
+        return;
+      }
       
-      newRow.innerHTML = `
-        <td style="cursor:pointer;color:#1976d2;text-decoration:underline;" onclick="showNoticeDetail('${title}', '관리자', '${date}', '${content}')">${title}</td>
-        <td>관리자</td>
-        <td>${date}</td>
-        <td>0</td>
-        <td>
-          <button onclick="editNotice(${noticeCounter})" style="padding:4px 8px;font-size:0.9em;border:none;border-radius:4px;background:#4d7bbd;color:#fff;cursor:pointer;margin-right:4px;">수정</button>
-          <button onclick="deleteNotice(${noticeCounter})" style="padding:4px 8px;font-size:0.9em;border:none;border-radius:4px;background:#d32f2f;color:#fff;cursor:pointer;">삭제</button>
-        </td>
-      `;
+      // Firebase에 공지사항 저장 (현재 시간 포함)
+      const selectedDate = new Date(date);
+      const now = new Date();
       
-      tbody.appendChild(newRow);
-      noticeCounter++;
+      // 선택한 날짜에 현재 시간을 설정
+      const noticeDate = new Date(
+        selectedDate.getFullYear(),
+        selectedDate.getMonth(),
+        selectedDate.getDate(),
+        now.getHours(),
+        now.getMinutes(),
+        now.getSeconds()
+      );
       
-      closeAddNoticeForm();
-      alert('공지사항이 추가되었습니다.');
+      const noticeData = {
+        title: title,
+        content: content,
+        author: currentAdmin.email === 'director@dormi.com' ? '실장님' : 
+                currentAdmin.email === 'supervisor@dormi.com' ? '사감님' : 
+                currentAdmin.email === 'floor_manager@dormi.com' ? '층장님' : '관리자',
+        createdAt: firebase.firestore.Timestamp.fromDate(noticeDate),
+        updatedAt: firebase.firestore.Timestamp.now(),
+        viewCount: 0
+      };
+      
+      db.collection('notices').add(noticeData)
+        .then((docRef) => {
+          console.log('✅ 공지사항 추가 완료:', docRef.id);
+          closeAddNoticeForm();
+          alert('공지사항이 추가되었습니다.');
+          // 목록 새로고침
+          loadNoticesFromFirebase();
+        })
+        .catch((error) => {
+          console.error('❌ 공지사항 추가 오류:', error);
+          alert('공지사항 추가 중 오류가 발생했습니다.');
+        });
     }
     
     // 공지사항 추가 폼 닫기
@@ -3520,26 +3612,71 @@ document.getElementById('dashboard-view').style.display = 'none';
     }
     
     // 공지사항 수정
-    function editNotice(id) {
-      var row = document.querySelector(`#notice-table tbody tr:nth-child(${id})`);
-      if (row) {
-        var title = row.children[1].textContent;
-        var content = prompt('공지사항 내용을 수정하세요:', '수정된 내용을 입력하세요');
-        if (content) {
-          row.children[1].setAttribute('onclick', `showNoticeDetail('${title}', '관리자', '${row.children[3].textContent}', '${content}')`);
-          alert('공지사항이 수정되었습니다.');
-        }
+    function editNotice(noticeId) {
+      if (!db) {
+        console.error('Firebase Firestore가 초기화되지 않았습니다.');
+        alert('데이터베이스 연결에 문제가 있습니다.');
+        return;
       }
+      
+      // Firebase에서 공지사항 데이터 가져오기
+      db.collection('notices').doc(noticeId).get()
+        .then((doc) => {
+          if (!doc.exists) {
+            alert('공지사항을 찾을 수 없습니다.');
+            return;
+          }
+          
+          const data = doc.data();
+          const newTitle = prompt('공지사항 제목을 수정하세요:', data.title);
+          if (newTitle === null) return; // 취소
+          
+          const newContent = prompt('공지사항 내용을 수정하세요:', data.content);
+          if (newContent === null) return; // 취소
+          
+          // Firebase에서 공지사항 업데이트
+          db.collection('notices').doc(noticeId).update({
+            title: newTitle,
+            content: newContent,
+            updatedAt: firebase.firestore.Timestamp.now()
+          })
+          .then(() => {
+            console.log('✅ 공지사항 수정 완료:', noticeId);
+            alert('공지사항이 수정되었습니다.');
+            // 목록 새로고침
+            loadNoticesFromFirebase();
+          })
+          .catch((error) => {
+            console.error('❌ 공지사항 수정 오류:', error);
+            alert('공지사항 수정 중 오류가 발생했습니다.');
+          });
+        })
+        .catch((error) => {
+          console.error('❌ 공지사항 조회 오류:', error);
+          alert('공지사항을 불러오는 중 오류가 발생했습니다.');
+        });
     }
     
     // 공지사항 삭제
-    function deleteNotice(id) {
+    function deleteNotice(noticeId) {
+      if (!db) {
+        console.error('Firebase Firestore가 초기화되지 않았습니다.');
+        alert('데이터베이스 연결에 문제가 있습니다.');
+        return;
+      }
+      
       if (confirm('정말로 이 공지사항을 삭제하시겠습니까?')) {
-        var row = document.querySelector(`#notice-table tbody tr:nth-child(${id})`);
-        if (row) {
-          row.remove();
-          alert('공지사항이 삭제되었습니다.');
-        }
+        db.collection('notices').doc(noticeId).delete()
+          .then(() => {
+            console.log('✅ 공지사항 삭제 완료:', noticeId);
+            alert('공지사항이 삭제되었습니다.');
+            // 목록 새로고침
+            loadNoticesFromFirebase();
+          })
+          .catch((error) => {
+            console.error('❌ 공지사항 삭제 오류:', error);
+            alert('공지사항 삭제 중 오류가 발생했습니다.');
+          });
       }
     }
     

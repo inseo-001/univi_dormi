@@ -10,6 +10,7 @@ class Notice {
   final DateTime? updatedAt; // 수정일
   final bool isImportant; // 중요 공지 여부
   final String? category; // 카테고리 (선택사항)
+  final int viewCount; // 조회수
 
   Notice({
     this.id,
@@ -20,6 +21,7 @@ class Notice {
     this.updatedAt,
     this.isImportant = false,
     this.category,
+    this.viewCount = 0,
   });
 
   // Firestore에서 데이터를 가져올 때 사용
@@ -35,6 +37,7 @@ class Notice {
       updatedAt: (data['updatedAt'] as Timestamp?)?.toDate(),
       isImportant: data['isImportant'] ?? false,
       category: data['category'],
+      viewCount: data['viewCount'] ?? 0,
     );
   }
 
@@ -48,6 +51,7 @@ class Notice {
       'updatedAt': updatedAt != null ? Timestamp.fromDate(updatedAt!) : null,
       'isImportant': isImportant,
       'category': category,
+      'viewCount': viewCount,
     };
   }
 
@@ -61,8 +65,35 @@ class Notice {
     return isImportant ? Icons.priority_high : Icons.notifications_outlined;
   }
 
-  // 작성일 포맷팅
+  // 작성일 포맷팅 (한국 시간대 적용)
   String get formattedDate {
+    // Firebase에서 가져온 시간을 그대로 사용 (이미 로컬 시간)
     return '${createdAt.year}.${createdAt.month.toString().padLeft(2, '0')}.${createdAt.day.toString().padLeft(2, '0')}';
+  }
+
+  // 작성일과 시간 포맷팅 (한국 시간대 적용)
+  String get formattedDateTime {
+    return '${createdAt.year}.${createdAt.month.toString().padLeft(2, '0')}.${createdAt.day.toString().padLeft(2, '0')} ${createdAt.hour.toString().padLeft(2, '0')}:${createdAt.minute.toString().padLeft(2, '0')}';
+  }
+
+  // 상대적 시간 표시 (예: 2시간 전, 1일 전)
+  String get relativeTime {
+    final now = DateTime.now();
+    final difference = now.difference(createdAt);
+
+    // 음수 차이면 미래 시간이므로 "방금 전"으로 표시
+    if (difference.isNegative) {
+      return '방금 전';
+    }
+
+    if (difference.inDays > 0) {
+      return '${difference.inDays}일 전';
+    } else if (difference.inHours > 0) {
+      return '${difference.inHours}시간 전';
+    } else if (difference.inMinutes > 0) {
+      return '${difference.inMinutes}분 전';
+    } else {
+      return '방금 전';
+    }
   }
 }

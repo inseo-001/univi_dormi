@@ -386,8 +386,24 @@ class _NoticeMainWidgetState extends State<NoticeMainWidget> {
                                           hoverColor: Colors.transparent,
                                           highlightColor: Colors.transparent,
                                           onTap: () async {
+                                            // 조회수 증가
+                                            if (notice.id != null) {
+                                              try {
+                                                await _model.noticeService
+                                                    .incrementViewCount(
+                                                        notice.id!);
+                                                // 조회수 증가 후 목록 새로고침
+                                                await _loadNotices();
+                                              } catch (e) {
+                                                print('조회수 증가 오류: $e');
+                                              }
+                                            }
+
                                             context.pushNamed(
-                                                NoticeBigWidget.routeName);
+                                                NoticeBigWidget.routeName,
+                                                extra: <String, dynamic>{
+                                                  'noticeId': notice.id ?? '',
+                                                });
                                           },
                                           child: Container(
                                             width: 330.0,
@@ -614,7 +630,7 @@ class _NoticeMainWidgetState extends State<NoticeMainWidget> {
                                                       ),
                                                       SizedBox(width: 15.0),
                                                       Text(
-                                                        '${notice.createdAt.hour.toString().padLeft(2, '0')}:${notice.createdAt.minute.toString().padLeft(2, '0')}',
+                                                        notice.relativeTime,
                                                         style:
                                                             FlutterFlowTheme.of(
                                                                     context)
@@ -653,7 +669,7 @@ class _NoticeMainWidgetState extends State<NoticeMainWidget> {
                                                       ),
                                                       SizedBox(width: 3.0),
                                                       Text(
-                                                        '0',
+                                                        '${notice.viewCount}',
                                                         style: FlutterFlowTheme
                                                                 .of(context)
                                                             .bodyMedium

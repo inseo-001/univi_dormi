@@ -8,7 +8,9 @@ import 'notice_big_model.dart';
 export 'notice_big_model.dart';
 
 class NoticeBigWidget extends StatefulWidget {
-  const NoticeBigWidget({super.key});
+  const NoticeBigWidget({super.key, this.noticeId});
+
+  final String? noticeId;
 
   static String routeName = 'NoticeBig';
   static String routePath = '/noticeBig';
@@ -26,6 +28,11 @@ class _NoticeBigWidgetState extends State<NoticeBigWidget> {
   void initState() {
     super.initState();
     _model = createModel(context, () => NoticeBigModel());
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     _loadNotice();
   }
 
@@ -35,9 +42,20 @@ class _NoticeBigWidgetState extends State<NoticeBigWidget> {
         _model.isLoading = true;
       });
 
-      final notices = await _model.noticeService.getNotices(limit: 1);
-      if (notices.isNotEmpty) {
-        _model.notice = notices.first;
+      // arguments에서 noticeId 가져오기
+      final extra =
+          ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+      final noticeId = extra?['noticeId'] as String?;
+
+      if (noticeId != null && noticeId.isNotEmpty) {
+        // 특정 공지사항 로드
+        _model.notice = await _model.noticeService.getNoticeById(noticeId);
+      } else {
+        // 첫 번째 공지사항 로드 (기존 방식)
+        final notices = await _model.noticeService.getNotices(limit: 1);
+        if (notices.isNotEmpty) {
+          _model.notice = notices.first;
+        }
       }
 
       setState(() {
@@ -252,7 +270,27 @@ class _NoticeBigWidgetState extends State<NoticeBigWidget> {
                                               ),
                                               SizedBox(width: 5.0),
                                               Text(
-                                                _model.notice!.formattedDate,
+                                                _model
+                                                    .notice!.formattedDateTime,
+                                                style:
+                                                    FlutterFlowTheme.of(context)
+                                                        .bodySmall
+                                                        .override(
+                                                          color:
+                                                              Color(0xFF57636C),
+                                                          fontSize: 12.0,
+                                                          letterSpacing: 0.0,
+                                                        ),
+                                              ),
+                                              SizedBox(width: 15.0),
+                                              Icon(
+                                                Icons.remove_red_eye,
+                                                color: Color(0xFF57636C),
+                                                size: 14.0,
+                                              ),
+                                              SizedBox(width: 5.0),
+                                              Text(
+                                                '${_model.notice!.viewCount}',
                                                 style:
                                                     FlutterFlowTheme.of(context)
                                                         .bodySmall

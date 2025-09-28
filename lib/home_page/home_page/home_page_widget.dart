@@ -794,134 +794,12 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                     : Column(
                                         mainAxisSize: MainAxisSize.max,
                                         children: [
-                                          // 첫 번째 공지사항 (메인)
-                                          Expanded(
-                                            child: InkWell(
-                                              splashColor: Colors.transparent,
-                                              focusColor: Colors.transparent,
-                                              hoverColor: Colors.transparent,
-                                              highlightColor:
-                                                  Colors.transparent,
-                                              onTap: () async {
-                                                context.pushNamed(
-                                                    NoticeMainWidget.routeName);
-                                              },
-                                              child: Container(
-                                                width: double.infinity,
-                                                padding: EdgeInsetsDirectional
-                                                    .fromSTEB(
-                                                        10.0, 10.0, 10.0, 5.0),
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Row(
-                                                      children: [
-                                                        if (_model.notices[0]
-                                                            .isImportant)
-                                                          Container(
-                                                            margin:
-                                                                EdgeInsetsDirectional
-                                                                    .fromSTEB(
-                                                                        0.0,
-                                                                        0.0,
-                                                                        5.0,
-                                                                        0.0),
-                                                            padding:
-                                                                EdgeInsetsDirectional
-                                                                    .fromSTEB(
-                                                                        4.0,
-                                                                        2.0,
-                                                                        4.0,
-                                                                        2.0),
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              color: Color(
-                                                                  0xFFFF6B6B),
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          4.0),
-                                                            ),
-                                                            child: Text(
-                                                              '중요',
-                                                              style: FlutterFlowTheme
-                                                                      .of(context)
-                                                                  .bodySmall
-                                                                  .override(
-                                                                    color: Colors
-                                                                        .white,
-                                                                    fontSize:
-                                                                        8.0,
-                                                                    letterSpacing:
-                                                                        0.0,
-                                                                  ),
-                                                            ),
-                                                          ),
-                                                        Expanded(
-                                                          child: Text(
-                                                            _model.notices[0]
-                                                                .title,
-                                                            style: FlutterFlowTheme
-                                                                    .of(context)
-                                                                .headlineSmall
-                                                                .override(
-                                                                  font: GoogleFonts
-                                                                      .interTight(
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w600,
-                                                                    fontStyle: FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .headlineSmall
-                                                                        .fontStyle,
-                                                                  ),
-                                                                  fontSize:
-                                                                      14.0,
-                                                                  letterSpacing:
-                                                                      0.0,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w600,
-                                                                  fontStyle: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .headlineSmall
-                                                                      .fontStyle,
-                                                                ),
-                                                            maxLines: 2,
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    SizedBox(height: 5.0),
-                                                    Text(
-                                                      _model.notices[0]
-                                                          .formattedDate,
-                                                      style:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .bodySmall
-                                                              .override(
-                                                                color: FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .secondaryText,
-                                                                fontSize: 10.0,
-                                                                letterSpacing:
-                                                                    0.0,
-                                                              ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          Divider(height: 1.0, thickness: 1.0),
-                                          // 두 번째 공지사항
-                                          if (_model.notices.length > 1)
-                                            Expanded(
+                                          // 공지사항 미리보기 (최대 3개)
+                                          ...(_model.notices
+                                              .take(3)
+                                              .toList()
+                                              .map((notice) {
+                                            return Expanded(
                                               child: InkWell(
                                                 splashColor: Colors.transparent,
                                                 focusColor: Colors.transparent,
@@ -929,27 +807,49 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                                 highlightColor:
                                                     Colors.transparent,
                                                 onTap: () async {
+                                                  // 조회수 증가
+                                                  if (notice.id != null) {
+                                                    try {
+                                                      await _model.noticeService
+                                                          .incrementViewCount(
+                                                              notice.id!);
+                                                      // 조회수 증가 후 목록 새로고침
+                                                      await _loadNotices();
+                                                    } catch (e) {
+                                                      print('조회수 증가 오류: $e');
+                                                    }
+                                                  }
+
                                                   context.pushNamed(
-                                                      NoticeMainWidget
-                                                          .routeName);
+                                                      NoticeBigWidget.routeName,
+                                                      extra: <String, dynamic>{
+                                                        'noticeId':
+                                                            notice.id ?? '',
+                                                      });
                                                 },
                                                 child: Container(
                                                   width: double.infinity,
                                                   padding: EdgeInsetsDirectional
                                                       .fromSTEB(
-                                                          10.0, 5.0, 10.0, 5.0),
-                                                  child: Row(
+                                                          10.0, 8.0, 10.0, 8.0),
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
                                                     children: [
-                                                      if (_model.notices[1]
-                                                          .isImportant)
+                                                      // 중요도 배지
+                                                      if (notice.isImportant)
                                                         Container(
                                                           margin:
                                                               EdgeInsetsDirectional
                                                                   .fromSTEB(
                                                                       0.0,
                                                                       0.0,
-                                                                      5.0,
-                                                                      0.0),
+                                                                      0.0,
+                                                                      4.0),
                                                           padding:
                                                               EdgeInsetsDirectional
                                                                   .fromSTEB(
@@ -980,29 +880,38 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                                                 ),
                                                           ),
                                                         ),
+                                                      // 제목
                                                       Expanded(
                                                         child: Text(
-                                                          _model
-                                                              .notices[1].title,
+                                                          notice.title,
                                                           style: FlutterFlowTheme
                                                                   .of(context)
                                                               .bodyMedium
                                                               .override(
                                                                 fontSize: 12.0,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
                                                                 letterSpacing:
                                                                     0.0,
                                                               ),
-                                                          maxLines: 1,
+                                                          maxLines: 2,
                                                           overflow: TextOverflow
                                                               .ellipsis,
                                                         ),
                                                       ),
-                                                      Text(
-                                                        _model.notices[1]
-                                                            .formattedDate,
-                                                        style:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
+                                                      SizedBox(height: 4.0),
+                                                      // 날짜와 상대적 시간
+                                                      Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        children: [
+                                                          Text(
+                                                            notice
+                                                                .formattedDate,
+                                                            style: FlutterFlowTheme
+                                                                    .of(context)
                                                                 .bodySmall
                                                                 .override(
                                                                   color: FlutterFlowTheme.of(
@@ -1012,111 +921,29 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                                                   letterSpacing:
                                                                       0.0,
                                                                 ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          // 세 번째 공지사항
-                                          if (_model.notices.length > 2)
-                                            Expanded(
-                                              child: InkWell(
-                                                splashColor: Colors.transparent,
-                                                focusColor: Colors.transparent,
-                                                hoverColor: Colors.transparent,
-                                                highlightColor:
-                                                    Colors.transparent,
-                                                onTap: () async {
-                                                  context.pushNamed(
-                                                      NoticeMainWidget
-                                                          .routeName);
-                                                },
-                                                child: Container(
-                                                  width: double.infinity,
-                                                  padding: EdgeInsetsDirectional
-                                                      .fromSTEB(10.0, 5.0, 10.0,
-                                                          10.0),
-                                                  child: Row(
-                                                    children: [
-                                                      if (_model.notices[2]
-                                                          .isImportant)
-                                                        Container(
-                                                          margin:
-                                                              EdgeInsetsDirectional
-                                                                  .fromSTEB(
-                                                                      0.0,
-                                                                      0.0,
-                                                                      5.0,
-                                                                      0.0),
-                                                          padding:
-                                                              EdgeInsetsDirectional
-                                                                  .fromSTEB(
-                                                                      4.0,
-                                                                      2.0,
-                                                                      4.0,
-                                                                      2.0),
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            color: Color(
-                                                                0xFFFF6B6B),
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        4.0),
                                                           ),
-                                                          child: Text(
-                                                            '중요',
+                                                          Text(
+                                                            notice.relativeTime,
                                                             style: FlutterFlowTheme
                                                                     .of(context)
                                                                 .bodySmall
                                                                 .override(
-                                                                  color: Colors
-                                                                      .white,
+                                                                  color: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .secondaryText,
                                                                   fontSize: 8.0,
                                                                   letterSpacing:
                                                                       0.0,
                                                                 ),
                                                           ),
-                                                        ),
-                                                      Expanded(
-                                                        child: Text(
-                                                          _model
-                                                              .notices[2].title,
-                                                          style: FlutterFlowTheme
-                                                                  .of(context)
-                                                              .bodyMedium
-                                                              .override(
-                                                                fontSize: 12.0,
-                                                                letterSpacing:
-                                                                    0.0,
-                                                              ),
-                                                          maxLines: 1,
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                        ),
-                                                      ),
-                                                      Text(
-                                                        _model.notices[2]
-                                                            .formattedDate,
-                                                        style:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .bodySmall
-                                                                .override(
-                                                                  color: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .secondaryText,
-                                                                  fontSize: 9.0,
-                                                                  letterSpacing:
-                                                                      0.0,
-                                                                ),
+                                                        ],
                                                       ),
                                                     ],
                                                   ),
                                                 ),
                                               ),
-                                            ),
+                                            );
+                                          }).toList()),
                                         ],
                                       ),
                           ),
